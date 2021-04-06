@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Project1.Services;
+using Project1.Services.SQL;
 
 namespace Project1
 {
@@ -28,6 +30,10 @@ namespace Project1
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            
+            UserSetting userSetting = UserSetting.GetUserSetting();
+            MSSQLDapper.ConnectionString = userSetting.ConnectionString["MSSQL"];
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
