@@ -12,7 +12,7 @@ namespace Project1.Models.Test
 
         public static async Task<IEnumerable<Test>> GetQueryTest()
         {
-            var model = await MSSQLDapper.Instance.GetQueryAsync<Test>("SELECT A FROM DBO.TEST", new { });
+            var model = await MSSQLDapper.Instance.GetFromXmlQueryAsync<Test>("Test.xml", "TestSql", new { A = "abc" });
 
             return model;
         }

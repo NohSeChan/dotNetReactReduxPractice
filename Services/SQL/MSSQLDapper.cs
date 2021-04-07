@@ -56,5 +56,11 @@ namespace Project1.Services.SQL
         {
             return await Dapper.SqlMapper.QueryAsync<T>(_connection, sql, param, _transaction);
         }
+
+        public async Task<IEnumerable<T>> GetFromXmlQueryAsync<T>(string xml, string sqlId, object param)
+        {
+            string sql = (new SqlManager(xml)).GetQuery(sqlId);
+            return await this.GetQueryAsync<T>(sql, param);
+        }
     }
 }
