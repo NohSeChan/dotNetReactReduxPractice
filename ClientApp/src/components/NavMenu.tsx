@@ -13,7 +13,7 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
             <header>
                 <Navbar className="navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" light>
                     <Container>
-                        <NavbarBrand tag={Link} to="/">이카운트 제출용 프로젝트</NavbarBrand>
+                        <NavbarBrand tag={Link} to="/">이카운트 제출용 포트폴리오</NavbarBrand>
                         <NavbarToggler onClick={this.toggle} className="mr-2"/>
                         <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={this.state.isOpen} navbar>
                             <ul className="navbar-nav flex-grow">
@@ -21,13 +21,13 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                                     <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/fetch-data">게시판</NavLink>
+                                    <NavLink tag={Link} className="text-dark" to="/fetch-data">Study Together</NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/count">로그인</NavLink>
+                                    <NavLink tag={Link} className="text-dark" to="/login">로그인</NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/count">회원가입</NavLink>
+                                    <NavLink tag={Link} className="text-dark" to="/register">회원가입</NavLink>
                                 </NavItem>
                             </ul>
                         </Collapse>
