@@ -8,6 +8,21 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
         isOpen: false
     };
 
+    value = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
+    handleLogout = () => {
+        fetch(`Logout`, {
+            method: 'post'
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.msg === 'OK') {
+                    document.cookie = 'id=;'
+                    document.location.href = '/';
+                }
+            });
+
+    }
+
     public render() {
         return (
             <header>
@@ -30,10 +45,11 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                                     <NavLink tag={Link} className="text-dark" to="/fetch-data">Study Together</NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/login">로그인</NavLink>
+                                    {this.value && this.value[2] ? null : <NavLink tag={Link} className="text-dark" to="/register">회원가입</NavLink>}
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/register">회원가입</NavLink>
+                                    {/*{this.value && this.value[2] ? <NavLink tag={Link} className="text-dark"><button onClick={ this.handleLogout }>로그아웃</button></NavLink> : <NavLink tag={Link} className="text-dark" to="/login">로그인</NavLink>}*/}
+                                    {this.value && this.value[2] ? <NavLink tag={Link} className="text-dark" onClick={this.handleLogout}>로그아웃</NavLink> : <NavLink tag={Link} className="text-dark" to="/login">로그인</NavLink>}
                                 </NavItem>
                             </ul>
                         </Collapse>

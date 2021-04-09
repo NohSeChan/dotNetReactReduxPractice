@@ -24,8 +24,6 @@ class Login extends React.PureComponent<LoginProps> {
 
     handleLogin = (e: any) => {
         e.preventDefault();
-        console.log('id ' + this.state.id);
-        console.log('password ' + this.state.password);
         fetch('Login', {
             method: 'post',
             body: JSON.stringify({
@@ -39,8 +37,8 @@ class Login extends React.PureComponent<LoginProps> {
         })
             .then(res => res.json())
             .then(data => {
-                console.log('성공!');
-                console.log(data);
+                document.cookie = "id=" + data.id;
+                document.location.href = "/";
             })
     }
 
