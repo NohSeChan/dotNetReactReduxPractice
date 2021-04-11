@@ -32,13 +32,19 @@ class Login extends React.PureComponent<LoginProps> {
             }),
             headers: {
                 'Accept': 'application/json; charset=utf-8',
-                'Content-Type': 'application/json;charset=UTF-8'
+                'Content-Type': 'application/json; charset=UTF-8'
             }
         })
             .then(res => res.json())
             .then(data => {
-                document.cookie = "id=" + data.id;
-                document.location.href = "/";
+                if (data.msg === 'OK') {
+                    document.cookie = "id=" + data.id;
+                    document.location.href = "/";
+                } else if (data.msg === 'FAIL') {
+                    alert(data.exceptionMsg);
+                }
+
+                
             })
     }
 
