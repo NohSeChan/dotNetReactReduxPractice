@@ -3,10 +3,23 @@
 	<select id="GetUserById">
 		SELECT 
 			ID, 
-			PASSWORD
+			PASSWORD,
+			USER_NAME
 		FROM 
 			T_USER
 		WHERE 
 			ID = @id
+	</select>
+	
+	<select id="GetUserByPw">
+		SELECT 
+			ID,
+			PASSWORD,
+			USER_NAME
+		FROM
+			T_USER
+		WHERE
+			ID = @id
+			AND PASSWORD = @password
 	</select>
 </mapper>
