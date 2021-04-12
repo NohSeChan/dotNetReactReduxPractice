@@ -11,7 +11,7 @@ namespace Project1.Services.Util
         public enum MyUserType
         {
               UID,
-              USER_NAME,
+              USERNAME,
         }
 
         public static void AddClaim(this ClaimsIdentity identity, MyUserType myUserType, string str)
@@ -25,8 +25,8 @@ namespace Project1.Services.Util
             {
                 case MyUserType.UID:
                     return "UID";
-                case MyUserType.USER_NAME:
-                    return "USER_NAME";
+                case MyUserType.USERNAME:
+                    return "USERNAME";
             }
 
             return null;

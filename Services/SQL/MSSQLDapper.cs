@@ -28,10 +28,10 @@ namespace Project1.Services.SQL
             _connection = new SqlConnection(ConnectionString);
         }
 
-        public async Task BeginTransaction()
+        public void BeginTransaction()
         {
             _connection.Open();
-            _transaction = (SqlTransaction)await _connection.BeginTransactionAsync();
+            _transaction = _connection.BeginTransaction();
         }
 
         public void Commit()
@@ -61,6 +61,18 @@ namespace Project1.Services.SQL
         {
             string sql = (new SqlManager(xml)).GetQuery(sqlId);
             return await this.GetQueryAsync<T>(sql, param);
+        }
+
+        public async Task<int> ExecuteAsync(string sql, object param)
+        {
+            return await Dapper.SqlMapper.ExecuteAsync(_connection, sql, param, _transaction);
+        }
+
+        public async Task<int> ExecuteFromXmlAsync(string xml, string sqlId, object param)
+        {
+            string sql = (new SqlManager(xml)).GetQuery(sqlId);
+
+            return await this.ExecuteAsync(sql, param);
         }
     }
 }

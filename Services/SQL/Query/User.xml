@@ -4,7 +4,7 @@
 		SELECT 
 			ID, 
 			PASSWORD,
-			USER_NAME
+			USERNAME
 		FROM 
 			T_USER
 		WHERE 
@@ -15,11 +15,15 @@
 		SELECT 
 			ID,
 			PASSWORD,
-			USER_NAME
+			USERNAME
 		FROM
 			T_USER
 		WHERE
 			ID = @id
 			AND PASSWORD = @password
 	</select>
+	<insert id="InsertUser">
+		INSERT INTO T_USER(ID, PASSWORD, USERNAME, CREATE_DATETIME)
+		VALUES (@Id, @PASSWORD, @USERNAME, GETDATE())
+	</insert>
 </mapper>

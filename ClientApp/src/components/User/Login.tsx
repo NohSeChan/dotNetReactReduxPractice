@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../store';
 import * as CounterStore from '../../store/Counter';
 import { Link } from 'react-router-dom';
+import * as utils from '../../utils/util';
 
 type LoginProps =
     CounterStore.CounterState &
@@ -38,10 +39,8 @@ class Login extends React.PureComponent<LoginProps> {
             .then(res => res.json())
             .then(data => {
                 if (data.msg === 'OK') {
-                    console.log(1, data.id);
                     document.cookie = "id=" + data.id;
-                    console.log(2, data.userName);
-                    document.cookie = "userName=" + this.strToAscii(data.userName);
+                    document.cookie = "userName=" + utils.strToAscii(data.userName);
                     document.location.href = "/";
                 } else if (data.msg === 'FAIL') {
                     alert(data.exceptionMsg);
@@ -51,22 +50,6 @@ class Login extends React.PureComponent<LoginProps> {
             })
     }
 
-    strToAscii = (str: any) => {
-        var _ascii = [];
-        for (let i: number = 0; i <= str.length - 1; i++) {
-            _ascii.push(str.charCodeAt([i]));
-        }
-        return _ascii;
-    }
-
-    asciiToStr = (ascii: Array<any>) => {
-        var str = "";
-        for (var i = 0; i <= ascii.length - 1; i++) {
-            str = str + String.fromCharCode(ascii[i]);
-        }
-        return str;
-
-    }
 
     public render() {
         return (

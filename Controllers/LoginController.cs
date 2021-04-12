@@ -39,12 +39,12 @@ namespace Project1.Controllers
             ClaimsIdentity identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, input.Id));
             identity.AddClaim(new Claim(ClaimTypes.Name, input.Id));
-            identity.AddClaim(MyExtention.MyUserType.USER_NAME, user.USER_NAME);
+            identity.AddClaim(MyExtention.MyUserType.USERNAME, user.USERNAME);
 
             ClaimsPrincipal principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            return Json(new { msg = "OK", id = user.Id, userName = user.USER_NAME });
+            return Json(new { msg = "OK", id = user.Id, userName = user.USERNAME });
         }
 
         [HttpPost]
@@ -55,5 +55,37 @@ namespace Project1.Controllers
 
             return Json(new { msg = "OK" });
         }
+
+        [HttpPost]
+        [Route("Register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterPost([FromBody] MUser input)
+        {
+            if (input.PASSWORD != input.PASSWORD2)
+                return Json(new { msg = "비밀번호와 비밀번호 확인을 일치시켜주세요!" });
+
+            try
+            {
+                _mssqlDapper.BeginTransaction();
+
+                var r = await input.InsertUser(_mssqlDapper);
+
+                if (r < 1)
+                    throw new Exception("회원등록오류 관리자에게 문의하세요");
+
+                _mssqlDapper.Commit();
+
+            }
+            catch (Exception ex)
+            {
+                _mssqlDapper.Rollback();
+                throw ex;
+            }
+
+            
+
+            return await LoginPost(input);
+        }
+
     }
 }

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../store';
 import * as CounterStore from '../../store/Counter';
+import * as utils from '../../utils/util';
 
 type LoginProps =
     CounterStore.CounterState &
@@ -12,6 +13,7 @@ type LoginProps =
 class Register extends React.PureComponent<LoginProps> {
     state = {
         id: '',
+        userName: '',
         password: '',
         password2: '',
     }
@@ -24,15 +26,36 @@ class Register extends React.PureComponent<LoginProps> {
 
     handleRegister = (e: any) => {
         e.preventDefault()
-        console.log('id ' + this.state.id);
-        console.log('password ' + this.state.password);
-        console.log('password2 ' + this.state.password2);
+        fetch(`Register`, {
+            method: 'post',
+            body: JSON.stringify({
+                id: this.state.id,
+                userName: this.state.userName,
+                password: this.state.password,
+                password2: this.state.password2,
+            }),
+            headers: {
+                'Accept': 'application/json; charset=utf-8',
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.msg === 'OK') {
+                    document.cookie = "id=" + data.id;
+                    document.cookie = "userName=" + utils.strToAscii(data.userName);
+                    document.location.href = "/";
+                } else if (data.msg === 'FAIL') {
+                    alert(data.exceptionMsg);
+                }
+            });
     }
 
     handleReset = (e: any) => {
         e.preventDefault()
         this.setState({
             id: '',
+            userName: '',
             password: '',
             password2: '',
         });
@@ -51,6 +74,16 @@ class Register extends React.PureComponent<LoginProps> {
                             value={this.state.id}
                             onChange={this.handleChange}
                             placeholder="아이디 입력"
+                        />
+                    </div>
+                    <div>
+                        <label>닉네임 : &nbsp;&nbsp;</label>
+                        <input
+                            type="text"
+                            name="userName"
+                            value={this.state.userName}
+                            onChange={this.handleChange}
+                            placeholder="닉네임 입력"
                         />
                     </div>
                     <div>
