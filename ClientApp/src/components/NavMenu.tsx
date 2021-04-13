@@ -42,7 +42,7 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                                     <NavLink tag={Link} className="text-dark" to="/fetch-data">날씨</NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/fetch-data">Study Together</NavLink>
+                                    <NavLink tag={Link} className="text-dark" to="/board">게시판</NavLink>
                                 </NavItem>
                                 <NavItem>
                                     {this.value && this.value[2] ? null : <NavLink tag={Link} className="text-dark" to="/register">회원가입</NavLink>}

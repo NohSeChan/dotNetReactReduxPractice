@@ -8,6 +8,7 @@ import Login from './components/User/Login';
 import Register from './components/User/Register';
 
 import './custom.css'
+import Board from './components/Board/Board';
 
 export default () => (
     <Layout>
@@ -15,6 +16,7 @@ export default () => (
         <Route path='/counter' component={Counter} />
         <Route path='/fetch-data/:startDateIndex?' component={FetchData} />
         <Route path='/login' component={Login} />
-        <Route path='/register' component={ Register } />
+        <Route path='/register' component={Register} />
+        <Route path='/board' component={Board} />
     </Layout>
 );
