@@ -9,6 +9,7 @@ import Register from './components/User/Register';
 
 import './custom.css'
 import Board from './components/Board/Board';
+import BoardWrite from './components/Board/BoardWrite';
 
 export default () => (
     <Layout>
@@ -18,5 +19,6 @@ export default () => (
         <Route path='/login' component={Login} />
         <Route path='/register' component={Register} />
         <Route path='/board' component={Board} />
+        <Route path='/board/write' component={BoardWrite} />
     </Layout>
 );

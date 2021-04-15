@@ -17,6 +17,7 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
             .then(data => {
                 if (data.msg === 'OK') {
                     document.cookie = 'id=;'
+                    document.cookie = 'userName=;'
                     document.location.href = '/';
                 }
             });
@@ -48,7 +49,6 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                                     {this.value && this.value[2] ? null : <NavLink tag={Link} className="text-dark" to="/register">회원가입</NavLink>}
                                 </NavItem>
                                 <NavItem>
-                                    {/*{this.value && this.value[2] ? <NavLink tag={Link} className="text-dark"><button onClick={ this.handleLogout }>로그아웃</button></NavLink> : <NavLink tag={Link} className="text-dark" to="/login">로그인</NavLink>}*/}
                                     {this.value && this.value[2] ? <NavLink tag={Link} className="text-dark" onClick={this.handleLogout} to="/">로그아웃</NavLink> : <NavLink tag={Link} className="text-dark" to="/login">로그인</NavLink>}
                                 </NavItem>
                             </ul>

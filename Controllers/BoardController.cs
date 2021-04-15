@@ -36,6 +36,7 @@ namespace Project1.Controllers
                 {
                     return Json(new { msg = "OK", boardList = boardList });
                 } 
+
                 else
                 {
                     return Json(new { msg = "FAIL", exceptionMsg = "게시판 리스트 요청 오류입니다" });

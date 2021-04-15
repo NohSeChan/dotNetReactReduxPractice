@@ -5,7 +5,6 @@ import { ApplicationState } from '../../store';
 import * as CounterStore from '../../store/Counter';
 import { Link } from 'react-router-dom';
 import { Table } from 'reactstrap';
-import BoardList from './BoardList';
 
 //type BoardProps =
 //    CounterStore.CounterState &
@@ -20,7 +19,7 @@ interface listType {
     boardView: number;
 }
 
-class Board extends Component {
+class Board extends Component<any> {
     state = {
         boardList: [
             {
@@ -30,6 +29,8 @@ class Board extends Component {
                 boardview: 0,
             }
         ],
+        status: 'read',
+        isLogin: false,
     }
 
     componentDidMount() {
@@ -43,12 +44,41 @@ class Board extends Component {
                 } else if (data.msg === 'FAIL') {
                     alert(data.exceptionMsg);
                 }
+            });
+
+        var myCookie = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
+        if (myCookie && myCookie[2] !== "" && !this.state.isLogin) {
+            this.setState({
+                isLogin: true
+            });
+        } else {
+            this.setState({
+                isLogin: false
+            });
+        }
+    }
+
+    componentDidUpdate(prevProps: any, prevState: any) {
+        // 작성중에 게시판을 다시 눌렀을때
+        if (this.state.status === 'write' && prevState.status === 'write') {
+            this.setState({
+                status: 'read'
+            });
+        }
+    }
+
+    handleWriteToggle = () => {
+        if (this.state.isLogin) {
+            this.setState({
+                status: 'write'
             })
+        } else {
+            alert('로그인을 해주세요');
+        };
     }
 
 
     public render() {
-
         const list = this.state.boardList.map(v => (
             <tr key={v.boardno}>
                 <td>{v.boardno}</td>
@@ -58,27 +88,39 @@ class Board extends Component {
             </tr>
         ));
 
-        return (
-            <React.Fragment>
-                <h1>기본 게시판 구현</h1>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th>제목</th>
-                            <th>작성자</th>
-                            <th>조회수</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {list}
-                    </tbody>
-                    {/*<BoardList list={this.state.boardList} />*/}
-                </Table>
-            </React.Fragment>
+        if (this.state.status === 'read') {
+            return (
+                <React.Fragment>
+                    <h1>기본 게시판 구현</h1>
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>번호</th>
+                                <th>제목</th>
+                                <th>작성자</th>
+                                <th>조회수</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {list}
+                        </tbody>
+                    </Table>
+                    <br />
+                    {
+                        this.state.isLogin
+                            ? <Link to='/board/write'><button type="button" onClick={this.handleWriteToggle}>작성</button></Link>
+                            : <Link to='/login'><button type="button" onClick={this.handleWriteToggle}>작성</button></Link>
+                    }
+                </React.Fragment>
+            );
+        } else if (this.state.status === 'write') {
+            return (
+                <React.Fragment>
+                </React.Fragment>
+            );
+        }
 
-
-        );
+        
     }
 };
 
