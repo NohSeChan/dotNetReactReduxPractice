@@ -25,7 +25,7 @@ class Register extends React.PureComponent<LoginProps> {
     }
 
     handleRegister = (e: any) => {
-        e.preventDefault()
+        e.preventDefault();
         fetch(`Register`, {
             method: 'post',
             body: JSON.stringify({

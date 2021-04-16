@@ -49,13 +49,29 @@ class BoardWrite extends Component<writeType> {
         this.setState({
             [e.target.name]: e.target.value
         });
-
-        console.log(this.state);
-        
     }
 
     handleSubmit = () => {
-        
+        fetch(`WriteBoard`, {
+            method: 'post',
+            body: JSON.stringify({
+                BOARDTITLE: this.state.boardTitle,
+                BOARDAUTHOR: this.state.boardAuthor,
+                BOARDCONTENTS: $('#summernote').summernote('code')
+            }),
+            headers: {
+                'Accept': 'application/json; charset=utf-8',
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.msg === 'OK') {
+                    document.location.href = "/board";
+                } else if (data.msg === 'FAIL') {
+                    alert(data.exceptionMsg);
+                }
+            });
     }
 
     public render() {
@@ -87,7 +103,7 @@ class BoardWrite extends Component<writeType> {
                     <tbody>
                         <tr>
                             <th>내용</th>
-                            <td><textarea id="summernote" name="boardContents" value={this.state.boardContents} onChange={this.onChange}></textarea></td>
+                            <td><input type="text" id="summernote" name="boardContents" value={this.state.boardContents} onChange={this.onChange} /></td>
                         </tr>
                     </tbody>
                 </table>

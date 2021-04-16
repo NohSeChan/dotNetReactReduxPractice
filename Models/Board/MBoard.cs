@@ -12,12 +12,18 @@ namespace Project1.Models.Board
         public int BOARDNO { get; set; }
         public string BOARDTITLE { get; set; }
         public string BOARDAUTHOR { get; set; }
+        public string BOARDCONTENTS { get; set; }
         public int BOARDVIEW { get; set; }
 
 
         public async static Task<IEnumerable<MBoard>> GetBoardList(int page)
         {
             return await MSSQLDapper.Instance.GetFromXmlQueryAsync<MBoard>("Board.xml", "SelectBoardList", new { page = page});
+        }
+
+        public async Task<int> InsertBoard(MSSQLDapper mssqlDapper)
+        {
+            return await mssqlDapper.ExecuteFromXmlAsync("Board.xml", "InsertBoard", this);
         }
     }
 }

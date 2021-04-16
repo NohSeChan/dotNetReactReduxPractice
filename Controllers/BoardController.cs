@@ -28,14 +28,14 @@ namespace Project1.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> BoardList(int pageNum = 1)
         {
-            try 
+            try
             {
                 var boardList = await MBoard.GetBoardList(pageNum);
 
                 if (boardList != null)
                 {
                     return Json(new { msg = "OK", boardList = boardList });
-                } 
+                }
 
                 else
                 {
@@ -44,6 +44,32 @@ namespace Project1.Controllers
             }
             catch (Exception ex)
             {
+                return Json(new { msg = "FAIL", exceptionMsg = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("WriteBoard")]
+        public async Task<IActionResult> WriteBoard([FromBody] MBoard input)
+        {
+
+            try
+            {
+                _mssqlDapper.BeginTransaction();
+
+                int r = await input.InsertBoard(_mssqlDapper);
+
+                if (r < 1)
+                {
+                    throw new Exception("게시글 작성 중 오류가 발생했습니다. 관리자에게 문의해주세요");
+                }
+
+                _mssqlDapper.Commit();
+                return Json(new { msg = "OK" });
+            }
+            catch (Exception ex)
+            {
+                _mssqlDapper.Rollback();
                 return Json(new { msg = "FAIL", exceptionMsg = ex.Message });
             }
         }
