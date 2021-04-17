@@ -14,13 +14,48 @@ interface Props {
     boardView: number;
     boardContents: string;
     boardCreateDateTime: string;
+    boardUserId: string;
+    deleteComplete:(boardNo: number) => void;
 }
 
 class BoardContents extends Component<Props> {
     state = {
+        showUpdateDeleteBtn: false
     }
 
     componentDidMount() {
+        var myCookie = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
+        
+        if (this.props.boardUserId === (myCookie && myCookie[2])) {
+            this.setState({
+                showUpdateDeleteBtn: true
+            });
+        } else {
+            this.setState({
+                showUpdateDeleteBtn: false
+            });
+        }
+    }
+
+    handleRemove = () => {
+        fetch('DeleteBoard', {
+            method: 'post',
+            body: JSON.stringify({
+                boardNo: this.props.boardNo,
+            }),
+            headers: {
+                'Accept': 'application/json; charset=utf-8',
+                'Content-Type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.msg === 'OK') {
+                    this.props.deleteComplete(this.props.boardNo);
+                } else if (data.msg === 'FAIL') {
+                    alert(data.exceptionMsg);
+                }
+            })
     }
 
     
@@ -58,6 +93,10 @@ class BoardContents extends Component<Props> {
                 </Table>
                 
                 <Link to='/board'><button type="button">목록</button></Link>
+                {this.state.showUpdateDeleteBtn
+                    ? <>&nbsp;<button>수정</button>&nbsp;<button onClick={this.handleRemove}>삭제</button></>
+                    : null
+                }
             </div>
             );
     };

@@ -16,16 +16,36 @@ class Register extends React.PureComponent<LoginProps> {
         userName: '',
         password: '',
         password2: '',
+        idCheck: true,
     }
+
+    regExp = /[^a-zA-Z0-9]/;
+
 
     handleChange = (e: any) => {
         this.setState({
             [e.target.name]: e.target.value
         });
+
+        if (e.target.name === 'id' && e.target.value.match(this.regExp) !== null) {
+            this.setState({
+                idCheck: false
+            });
+        } else if (e.target.name === 'id' && e.target.value.match(this.regExp) === null) {
+            this.setState({
+                idCheck: true
+            });
+        }
     }
 
     handleRegister = (e: any) => {
         e.preventDefault();
+
+        if (!this.state.idCheck) {
+            alert('아이디에는 영문자와 숫자만 입력가능합니다');
+            return;
+        }
+
         fetch(`Register`, {
             method: 'post',
             body: JSON.stringify({
@@ -75,6 +95,7 @@ class Register extends React.PureComponent<LoginProps> {
                             onChange={this.handleChange}
                             placeholder="아이디 입력"
                         />
+                        {!this.state.idCheck ? <div style={{color: 'red'}}>※ 아이디에는 영문자와 숫자만 입력가능합니다</div> : null}
                     </div>
                     <div>
                         <label>닉네임 : &nbsp;&nbsp;</label>

@@ -38,7 +38,8 @@ class Board extends Component<any> {
             boardAuthor: '',
             boardView: 0,
             boardContents: '',
-            boardCreateDateTime: ''
+            boardCreateDateTime: '',
+            boardUserId: '',
         }
     }
 
@@ -99,7 +100,8 @@ class Board extends Component<any> {
                             boardAuthor: data.boardDetail.boardauthor,
                             boardView: data.boardDetail.boardview,
                             boardContents: data.boardDetail.boardcontents,
-                            boardCreateDateTime: data.boardDetail.creatE_DATETIME
+                            boardCreateDateTime: data.boardDetail.creatE_DATETIME,
+                            boardUserId: data.boardDetail.boarduserid
                         }
                     });
                 } else if (data.msg === 'FAIL') {
@@ -108,7 +110,12 @@ class Board extends Component<any> {
             });
     }
 
-
+    handleDeleteComplete = (boardNo: number) => {
+        this.setState({
+            status: 'read',
+            boardList: this.state.boardList.filter(board => board.boardno !== boardNo)
+        });
+    }
 
     public render() {
         const list = this.state.boardList.map(v => (
@@ -168,6 +175,8 @@ class Board extends Component<any> {
                         boardView={this.state.boardDetail.boardView}
                         boardContents={this.state.boardDetail.boardContents}
                         boardCreateDateTime={this.state.boardDetail.boardCreateDateTime}
+                        boardUserId={this.state.boardDetail.boardUserId}
+                        deleteComplete={this.handleDeleteComplete}
                     />
                 </React.Fragment>
             );

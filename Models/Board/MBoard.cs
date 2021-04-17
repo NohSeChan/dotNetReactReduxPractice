@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Project1.Services.SQL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Project1.Models.Board
@@ -15,7 +17,7 @@ namespace Project1.Models.Board
         public string BOARDCONTENTS { get; set; }
         public int BOARDVIEW { get; set; }
         public DateTime CREATE_DATETIME { get; set; }
-
+        public string BOARDUSERID { get; set; }
 
         public async static Task<IEnumerable<MBoard>> GetBoardList(int page)
         {
@@ -30,6 +32,12 @@ namespace Project1.Models.Board
         public async static Task<MBoard> GetBoardDetail(int boardNo)
         {
             return (await MSSQLDapper.Instance.GetFromXmlQueryAsync<MBoard>("Board.xml", "SelectBoardDetail", new { BOARDNO = boardNo })).FirstOrDefault();
+        }
+
+        public async Task<int> DeleteBoard(MSSQLDapper mssqlDapper)
+        {
+            return await mssqlDapper.ExecuteFromXmlAsync("Board.xml", "DeleteBoard", this);
+
         }
     }
 }

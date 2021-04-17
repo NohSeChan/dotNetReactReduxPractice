@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Project1.Models.Board;
 using Project1.Models.User;
 using Project1.Services.SQL;
 using Project1.Services.Util;
 using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -18,9 +20,12 @@ namespace Project1.Controllers
     {
         private MSSQLDapper _mssqlDapper;
 
-        public BoardController(MSSQLDapper mssqlDapper)
+        private IHttpContextAccessor _httpContextAccessor;
+
+        public BoardController(MSSQLDapper mssqlDapper, IHttpContextAccessor httpContextAccessor)
         {
             _mssqlDapper = mssqlDapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
@@ -54,8 +59,11 @@ namespace Project1.Controllers
 
             try
             {
-                _mssqlDapper.BeginTransaction();
+                var principal = new ClaimsPrincipal(_httpContextAccessor.HttpContext.User.Identity);
+                var loginId = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+                input.BOARDUSERID = loginId;
 
+                _mssqlDapper.BeginTransaction();
                 int r = await input.InsertBoard(_mssqlDapper);
 
                 if (r < 1)
@@ -96,8 +104,32 @@ namespace Project1.Controllers
             {
                 return Json(new { msg = "FAIL", exceptionMsg = ex.Message });
             }
-
         }
 
+        
+        [HttpPost]
+        [Route("DeleteBoard")]
+        public async Task<IActionResult> DeleteBoard([FromBody] MBoard input)
+        {
+            try
+            {
+                _mssqlDapper.BeginTransaction();
+
+                int r = await input.DeleteBoard(_mssqlDapper);
+
+                if (r < 1)
+                {
+                    throw new Exception("게시글 삭제 중 오류가 발생했습니다. 관리자에게 문의해주세요");
+                }
+
+                _mssqlDapper.Commit();
+                return Json(new { msg = "OK" });
+            }
+            catch (Exception ex)
+            {
+                _mssqlDapper.Rollback();
+                return Json(new { msg = "FAIL", exceptionMsg = ex.Message });
+            }
+        }
     }
 }
