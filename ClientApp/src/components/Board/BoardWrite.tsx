@@ -10,6 +10,7 @@ import 'summernote';
 import 'summernote/dist/lang/summernote-ko-KR';
 import 'summernote/dist/summernote.css';
 import 'bootstrap';
+import { Table } from 'reactstrap';
 
 //type BoardProps =
 //    CounterStore.CounterState &
@@ -80,7 +81,7 @@ class BoardWrite extends Component<writeType> {
             <React.Fragment>
                 <h1>기본 게시판 구현</h1>
                 <br />
-                <table style={{border: "solid 1px"}}>
+                <Table style={{border: "solid 1px"}}>
                     <colgroup>
                         <col style={{ "width":"90px" }} />
                         <col style={{ "width":"auto" }} />
@@ -106,8 +107,9 @@ class BoardWrite extends Component<writeType> {
                             <td><input type="text" id="summernote" name="boardContents" value={this.state.boardContents} onChange={this.onChange} /></td>
                         </tr>
                     </tbody>
-                </table>
+                </Table>
                 <button onClick={this.handleSubmit}>작성완료</button>
+                &nbsp;&nbsp;
                 <Link to='/board'><button type="button">취소</button></Link>
             </React.Fragment>
         );

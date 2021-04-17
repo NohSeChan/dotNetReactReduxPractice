@@ -14,6 +14,7 @@ namespace Project1.Models.Board
         public string BOARDAUTHOR { get; set; }
         public string BOARDCONTENTS { get; set; }
         public int BOARDVIEW { get; set; }
+        public DateTime CREATE_DATETIME { get; set; }
 
 
         public async static Task<IEnumerable<MBoard>> GetBoardList(int page)
@@ -24,6 +25,11 @@ namespace Project1.Models.Board
         public async Task<int> InsertBoard(MSSQLDapper mssqlDapper)
         {
             return await mssqlDapper.ExecuteFromXmlAsync("Board.xml", "InsertBoard", this);
+        }
+
+        public async static Task<MBoard> GetBoardDetail(int boardNo)
+        {
+            return (await MSSQLDapper.Instance.GetFromXmlQueryAsync<MBoard>("Board.xml", "SelectBoardDetail", new { BOARDNO = boardNo })).FirstOrDefault();
         }
     }
 }

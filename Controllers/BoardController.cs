@@ -36,7 +36,6 @@ namespace Project1.Controllers
                 {
                     return Json(new { msg = "OK", boardList = boardList });
                 }
-
                 else
                 {
                     return Json(new { msg = "FAIL", exceptionMsg = "게시판 리스트 요청 오류입니다" });
@@ -73,5 +72,32 @@ namespace Project1.Controllers
                 return Json(new { msg = "FAIL", exceptionMsg = ex.Message });
             }
         }
+
+        [HttpGet]
+        [Route("BoardDetail")]
+        [AllowAnonymous]
+        public async Task<IActionResult> BoardDetail(int boardNo)
+        {
+            try
+            {
+                var boardDetail = await MBoard.GetBoardDetail(boardNo);
+
+                if (boardDetail != null)
+                {
+                    return Json(new { msg = "OK", boardDetail= boardDetail });
+                }
+                else
+                {
+                    return Json(new { msg = "FAIL", exceptionMsg = "조회된 게시글이 없습니다" });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = "FAIL", exceptionMsg = ex.Message });
+            }
+
+        }
+
     }
 }

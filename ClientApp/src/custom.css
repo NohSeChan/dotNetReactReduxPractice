@@ -12,3 +12,9 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
+
+th, td {
+    border: 1px solid #dee2e6;
+    padding: 10px;
+}
