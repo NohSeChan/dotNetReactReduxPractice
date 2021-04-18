@@ -36,6 +36,14 @@
 			BOARDNO = @BOARDNO
 	</select>
 	
+	<update id="UpdateBoard">
+		UPDATE T_BOARD
+		SET 
+			BOARDTITLE=@BOARDTITLE,
+			BOARDCONTENTS=@BOARDCONTENTS
+		WHERE BOARDNO=@BOARDNO
+	</update>
+	
 	<delete id="DeleteBoard">
 		DELETE FROM T_BOARD
 		WHERE BOARDNO = @BOARDNO		

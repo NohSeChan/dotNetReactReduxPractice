@@ -26,16 +26,31 @@ interface State {
 
 interface Props {
     writeComplete: (maxBoardNo: number, boardTitle: string, boardAuthor: string) => void;
+    moveList: () => void;
+    boardDetail: BoardDetailType;
+    status: string;
+    updateComplete: (boardNo: number) => void;
+}
+
+interface BoardDetailType {
+    boardNo: number,
+    boardTitle: string,
+    boardAuthor: string,
+    boardView: number,
+    boardContents: string,
+    boardCreateDateTime: string,
+    boardUserId: string,
 }
 
 class BoardWrite extends Component<Props, State> {
     state = {
-        boardTitle: '',
-        boardAuthor: '',
-        boardContents: '',
+        boardTitle: this.props.boardDetail.boardTitle ||'',
+        boardAuthor: this.props.boardDetail.boardAuthor || '',
+        boardContents: this.props.boardDetail.boardContents || '',
     }
 
     componentDidMount() {
+        console.log(this.state);
         var myCookie = document.cookie.match('(^|;) ?' + 'userName' + '=([^;]*)(;|$)');
         var userNameAscii = myCookie && myCookie[2] || '';
         this.setState({
@@ -46,7 +61,7 @@ class BoardWrite extends Component<Props, State> {
             height: 300,                 // 에디터 높이
             lang:'ko-KR',
             focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
-            placeholder: '게시글을 입력해주세요'
+            placeholder: '게시글을 입력해주세요',
         });
     }
 
@@ -60,32 +75,61 @@ class BoardWrite extends Component<Props, State> {
     }
 
     handleSubmit = () => {
-        console.log(this.state.boardTitle);
-        console.log($('#summernote').summernote('code'));
         if (this.state.boardTitle === '' || $('#summernote').summernote('code') === '<p><br></p>') {
             alert('게시글 제목과 내용을 입력해주세요');
             return;
         }
-        fetch(`WriteBoard`, {
-            method: 'post',
-            body: JSON.stringify({
-                BOARDTITLE: this.state.boardTitle,
-                BOARDAUTHOR: this.state.boardAuthor,
-                BOARDCONTENTS: $('#summernote').summernote('code')
-            }),
-            headers: {
-                'Accept': 'application/json; charset=utf-8',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.msg === 'OK') {
-                    this.props.writeComplete(data.maxBoardNo, this.state.boardTitle, this.state.boardAuthor);
-                } else if (data.msg === 'FAIL') {
-                    alert(data.exceptionMsg);
+
+        if (this.props.status === 'write') {
+            fetch(`WriteBoard`, {
+                method: 'post',
+                body: JSON.stringify({
+                    BOARDTITLE: this.state.boardTitle,
+                    BOARDAUTHOR: this.state.boardAuthor,
+                    BOARDCONTENTS: $('#summernote').summernote('code')
+                }),
+                headers: {
+                    'Accept': 'application/json; charset=utf-8',
+                    'Content-Type': 'application/json; charset=utf-8'
                 }
-            });
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.msg === 'OK') {
+                        this.props.writeComplete(data.maxBoardNo, this.state.boardTitle, this.state.boardAuthor);
+                    } else if (data.msg === 'FAIL') {
+                        alert(data.exceptionMsg);
+                    }
+                });
+        } else if (this.props.status === 'update') {
+            fetch(`UpdateBoard`, {
+                method: 'post',
+                body: JSON.stringify({
+                    BOARDNO: this.props.boardDetail.boardNo,
+                    BOARDTITLE: this.state.boardTitle,
+                    BOARDAUTHOR: this.state.boardAuthor,
+                    BOARDCONTENTS: $('#summernote').summernote('code')
+                }),
+                headers: {
+                    'Accept': 'application/json; charset=utf-8',
+                    'Content-Type': 'application/json; charset=utf-8'
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.msg === 'OK') {
+                        this.props.updateComplete(this.props.boardDetail.boardNo);
+                    } else if (data.msg === 'FAIL') {
+                        alert(data.exceptionMsg);
+                    }
+                });
+        }
+
+        
+    }
+
+    handleMoveList = () => {
+        this.props.moveList();
     }
 
     public render() {
@@ -116,13 +160,16 @@ class BoardWrite extends Component<Props, State> {
                     <tbody>
                         <tr>
                             <th>내용</th>
-                            <td><input type="text" id="summernote" name="boardContents" value={this.state.boardContents} onChange={this.onChange} /></td>
+                            <td>
+                                <div id="summernote" dangerouslySetInnerHTML={{ __html: this.state.boardContents }}>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </Table>
                 <button onClick={this.handleSubmit}>작성완료</button>
                 &nbsp;&nbsp;
-                <Link to='/board'><button type="button">취소</button></Link>
+                <button onClick={this.handleMoveList}>취소</button>
             </React.Fragment>
         );
     }

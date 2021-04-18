@@ -109,7 +109,35 @@ namespace Project1.Controllers
             }
         }
 
+
         
+        [HttpPost]
+        [Route("UpdateBoard")]
+        public async Task<IActionResult> UpdateBoard([FromBody] MBoard input)
+        {
+            try
+            {
+                _mssqlDapper.BeginTransaction();
+
+                int r = await input.UpdateBoard(_mssqlDapper);
+
+                if (r < 1)
+                {
+                    throw new Exception("게시글 수정 중 오류가 발생했습니다. 관리자에게 문의해주세요");
+                }
+
+                _mssqlDapper.Commit();
+                return Json(new { msg = "OK" });
+                
+            }
+            catch (Exception ex)
+            {
+                _mssqlDapper.Rollback();
+                return Json(new { msg = "FAIL", exceptionMsg = ex.Message });
+            }
+        }
+
+
         [HttpPost]
         [Route("DeleteBoard")]
         public async Task<IActionResult> DeleteBoard([FromBody] MBoard input)

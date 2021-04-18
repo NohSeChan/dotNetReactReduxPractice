@@ -45,17 +45,7 @@ class Board extends Component<any> {
     }
 
     componentDidMount() {
-        fetch(`BoardList`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.msg === 'OK') {
-                    this.setState({
-                        boardList: data.boardList
-                    });
-                } else if (data.msg === 'FAIL') {
-                    alert(data.exceptionMsg);
-                }
-            });
+        this.getBoardList();
 
         var myCookie = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
         if (myCookie && myCookie[2] !== "" && !this.state.isLogin) {
@@ -69,19 +59,32 @@ class Board extends Component<any> {
         }
     }
 
-    componentDidUpdate(prevProps: any, prevState: any) {
-        // 작성중에 게시판을 다시 눌렀을때
-        if (this.state.status !== 'read' && prevState.status !== 'read') {
-            this.setState({
-                status: 'read'
+
+    getBoardList = () => {
+        fetch(`BoardList`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.msg === 'OK') {
+                    this.setState({
+                        boardList: data.boardList
+                    });
+                } else if (data.msg === 'FAIL') {
+                    alert(data.exceptionMsg);
+                }
             });
-        }
+    }
+
+    componentDidUpdate(prevProps: any, prevState: any) {
     }
 
     handleWriteToggle = () => {
         if (this.state.isLogin) {
             this.setState({
-                status: 'write'
+                status: 'write',
+                boardDetail: {
+                    boardTitle: '',
+                    boardContents: '',
+                }
             })
         } else {
             alert('로그인을 해주세요');
@@ -123,6 +126,20 @@ class Board extends Component<any> {
                     alert(data.exceptionMsg);
                 }
             });
+    }
+
+    handleMoveList = () => {
+        this.setState({
+            status: 'read'
+        });
+
+        this.getBoardList();
+    }
+
+    handleUpdateTransform = () => {
+        this.setState({
+            status: 'update'
+        });
     }
 
     handleDeleteComplete = (boardNo: number) => {
@@ -174,11 +191,15 @@ class Board extends Component<any> {
                     }
                 </React.Fragment>
             );
-        } else if (this.state.status === 'write') {
+        } else if (this.state.status === 'write' || this.state.status === 'update') {
             return (
                 <React.Fragment>
                     <BoardWrite
                         writeComplete={this.handleWriteComplete}
+                        moveList={this.handleMoveList}
+                        boardDetail={this.state.boardDetail}
+                        status={this.state.status}
+                        updateComplete={this.handleReadContents}
                     />
                 </React.Fragment>
             );
@@ -193,6 +214,8 @@ class Board extends Component<any> {
                         boardContents={this.state.boardDetail.boardContents}
                         boardCreateDateTime={this.state.boardDetail.boardCreateDateTime}
                         boardUserId={this.state.boardDetail.boardUserId}
+                        moveList={this.handleMoveList}
+                        updateTransform={this.handleUpdateTransform}
                         deleteComplete={this.handleDeleteComplete}
                     />
                 </React.Fragment>

@@ -15,7 +15,9 @@ interface Props {
     boardContents: string;
     boardCreateDateTime: string;
     boardUserId: string;
-    deleteComplete:(boardNo: number) => void;
+    moveList: () => void;
+    updateTransform: () => void;
+    deleteComplete: (boardNo: number) => void;
 }
 
 class BoardContents extends Component<Props> {
@@ -36,6 +38,15 @@ class BoardContents extends Component<Props> {
             });
         }
     }
+
+    handleMoveList = () => {
+        this.props.moveList();
+    }
+
+    handleUpdate = () => {
+        this.props.updateTransform();
+    }
+
 
     handleRemove = () => {
         if (window.confirm("해당 게시글을 삭제하시겠습니까?")) {
@@ -59,8 +70,6 @@ class BoardContents extends Component<Props> {
                 })
         }
     }
-
-    
 
     public render() {
         return (
@@ -95,9 +104,9 @@ class BoardContents extends Component<Props> {
                     </tbody>
                 </Table>
                 
-                <Link to='/board'><button type="button">목록</button></Link>
+                <button onClick={this.handleMoveList}>목록</button>
                 {this.state.showUpdateDeleteBtn
-                    ? <>&nbsp;<button>수정</button>&nbsp;<button onClick={this.handleRemove}>삭제</button></>
+                    ? <>&nbsp;<button onClick={this.handleUpdate}>수정</button>&nbsp;<button onClick={this.handleRemove}>삭제</button></>
                     : null
                 }
             </div>
