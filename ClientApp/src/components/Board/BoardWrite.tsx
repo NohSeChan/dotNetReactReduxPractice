@@ -18,13 +18,17 @@ import { Table } from 'reactstrap';
 //    RouteComponentProps<{}>;
 
 
-interface writeType {
+interface State {
     boardTitle: string;
     boardAuthor: string;
     boardContents: string;
 }
 
-class BoardWrite extends Component<writeType> {
+interface Props {
+    writeComplete: (maxBoardNo: number, boardTitle: string, boardAuthor: string) => void;
+}
+
+class BoardWrite extends Component<Props, State> {
     state = {
         boardTitle: '',
         boardAuthor: '',
@@ -46,13 +50,22 @@ class BoardWrite extends Component<writeType> {
         });
     }
 
-    onChange = (e: any) => {
-        this.setState({
-            [e.target.name]: e.target.value
-        });
+    onChange = (e: React.FormEvent<HTMLInputElement>): void => {
+        const key = e.currentTarget.name;
+        if (Object.keys(this.state).includes(key)) {
+            this.setState({
+                [key]: e.currentTarget.value
+            } as Pick<State, keyof State>);
+        }
     }
 
     handleSubmit = () => {
+        console.log(this.state.boardTitle);
+        console.log($('#summernote').summernote('code'));
+        if (this.state.boardTitle === '' || $('#summernote').summernote('code') === '<p><br></p>') {
+            alert('게시글 제목과 내용을 입력해주세요');
+            return;
+        }
         fetch(`WriteBoard`, {
             method: 'post',
             body: JSON.stringify({
@@ -68,7 +81,7 @@ class BoardWrite extends Component<writeType> {
             .then(res => res.json())
             .then(data => {
                 if (data.msg === 'OK') {
-                    document.location.href = "/board";
+                    this.props.writeComplete(data.maxBoardNo, this.state.boardTitle, this.state.boardAuthor);
                 } else if (data.msg === 'FAIL') {
                     alert(data.exceptionMsg);
                 }
@@ -76,7 +89,6 @@ class BoardWrite extends Component<writeType> {
     }
 
     public render() {
-
         return (
             <React.Fragment>
                 <h1>기본 게시판 구현</h1>
@@ -92,7 +104,7 @@ class BoardWrite extends Component<writeType> {
                             <td>
                                 <input
                                     type="text"
-                                    style={{ width: "729px" }}
+                                    style={{ width: "992px" }}
                                     name="boardTitle"
                                     value={this.state.boardTitle}
                                     onChange={this.onChange}

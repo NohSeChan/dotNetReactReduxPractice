@@ -72,7 +72,10 @@ namespace Project1.Controllers
                 }
 
                 _mssqlDapper.Commit();
-                return Json(new { msg = "OK" });
+
+                int maxBoardNo = await MBoard.GetMaxBoardNo();
+
+                return Json(new { msg = "OK", maxBoardNo=maxBoardNo });
             }
             catch (Exception ex)
             {

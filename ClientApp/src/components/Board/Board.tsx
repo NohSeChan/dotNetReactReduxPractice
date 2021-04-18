@@ -6,6 +6,7 @@ import * as CounterStore from '../../store/Counter';
 import { Link } from 'react-router-dom';
 import { Table } from 'reactstrap';
 import BoardContents from './BoardContents';
+import BoardWrite from './BoardWrite';
 
 //type BoardProps =
 //    CounterStore.CounterState &
@@ -87,6 +88,20 @@ class Board extends Component<any> {
         };
     }
 
+    handleWriteComplete = (maxBoardNo: number, boardTitle: string, boardAuthor: string) => {
+        let newBoard = {
+            boardno: maxBoardNo,
+            boardtitle: boardTitle,
+            boardauthor: boardAuthor,
+            boardview: 0
+        }
+
+        this.setState({
+            status: 'read',
+            boardList: [newBoard, ...this.state.boardList]
+        });
+    }
+
     handleReadContents = (boardno: number) => {
         fetch(`BoardDetail?boardNo=${boardno}`)
             .then(res => res.json())
@@ -154,7 +169,7 @@ class Board extends Component<any> {
                     <br />
                     {
                         this.state.isLogin
-                            ? <Link to='/board/write'><button type="button" onClick={this.handleWriteToggle}>작성</button></Link>
+                            ? <button type="button" onClick={this.handleWriteToggle}>작성</button>
                             : <Link to='/login'><button type="button" onClick={this.handleWriteToggle}>작성</button></Link>
                     }
                 </React.Fragment>
@@ -162,12 +177,14 @@ class Board extends Component<any> {
         } else if (this.state.status === 'write') {
             return (
                 <React.Fragment>
+                    <BoardWrite
+                        writeComplete={this.handleWriteComplete}
+                    />
                 </React.Fragment>
             );
         } else if (this.state.status === 'readDetail') {
             return (
                 <React.Fragment>
-                    <h1>기본 게시판 구현</h1>
                     <BoardContents
                         boardNo={this.state.boardDetail.boardNo}
                         boardTitle={this.state.boardDetail.boardTitle}

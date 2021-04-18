@@ -29,6 +29,11 @@ namespace Project1.Models.Board
             return await mssqlDapper.ExecuteFromXmlAsync("Board.xml", "InsertBoard", this);
         }
 
+        public async static Task<int> GetMaxBoardNo()
+        {
+            return (await MSSQLDapper.Instance.GetFromXmlQueryAsync<int>("Board.xml", "SelectMaxBoardNo", new { })).FirstOrDefault();
+        }
+
         public async static Task<MBoard> GetBoardDetail(int boardNo)
         {
             return (await MSSQLDapper.Instance.GetFromXmlQueryAsync<MBoard>("Board.xml", "SelectBoardDetail", new { BOARDNO = boardNo })).FirstOrDefault();
@@ -37,7 +42,6 @@ namespace Project1.Models.Board
         public async Task<int> DeleteBoard(MSSQLDapper mssqlDapper)
         {
             return await mssqlDapper.ExecuteFromXmlAsync("Board.xml", "DeleteBoard", this);
-
         }
     }
 }

@@ -38,24 +38,26 @@ class BoardContents extends Component<Props> {
     }
 
     handleRemove = () => {
-        fetch('DeleteBoard', {
-            method: 'post',
-            body: JSON.stringify({
-                boardNo: this.props.boardNo,
-            }),
-            headers: {
-                'Accept': 'application/json; charset=utf-8',
-                'Content-Type': 'application/json; charset=UTF-8'
-            }
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.msg === 'OK') {
-                    this.props.deleteComplete(this.props.boardNo);
-                } else if (data.msg === 'FAIL') {
-                    alert(data.exceptionMsg);
+        if (window.confirm("해당 게시글을 삭제하시겠습니까?")) {
+            fetch('DeleteBoard', {
+                method: 'post',
+                body: JSON.stringify({
+                    boardNo: this.props.boardNo,
+                }),
+                headers: {
+                    'Accept': 'application/json; charset=utf-8',
+                    'Content-Type': 'application/json; charset=UTF-8'
                 }
             })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.msg === 'OK') {
+                        this.props.deleteComplete(this.props.boardNo);
+                    } else if (data.msg === 'FAIL') {
+                        alert(data.exceptionMsg);
+                    }
+                })
+        }
     }
 
     
@@ -63,6 +65,7 @@ class BoardContents extends Component<Props> {
     public render() {
         return (
             <div>
+                <h1>기본 게시판 구현</h1>
                 <Table>
                     <thead> 
                         <tr>
