@@ -41,7 +41,9 @@ class Board extends Component<any> {
             boardContents: '',
             boardCreateDateTime: '',
             boardUserId: '',
-        }
+        },
+        filterKeyTitle: '',
+        filterKeyAuthor: '',
     }
 
     componentDidMount() {
@@ -157,8 +159,16 @@ class Board extends Component<any> {
         });
     }
 
+    onChange = (e: React.FormEvent<HTMLInputElement>) => {
+        this.setState({
+            [e.currentTarget.name]: e.currentTarget.value
+        })
+    }
+
     public render() {
-        const list = this.state.boardList.map(v => (
+        const filterList = this.state.boardList.filter(v => v.boardtitle.includes(this.state.filterKeyTitle) && v.boardauthor.includes(this.state.filterKeyAuthor));
+
+        const list = filterList.map(v => (
             <tr key={v.boardno}>
                 <td>{v.boardno}</td>
                 <td>
@@ -178,7 +188,10 @@ class Board extends Component<any> {
             return (
                 <React.Fragment>
                     <h1>기본 게시판 구현</h1>
-                    <Table>
+                    <input name="filterKeyTitle" onChange={this.onChange} value={this.state.filterKeyTitle} placeholder="제목 검색" />
+                    &nbsp;
+                    <input name="filterKeyAuthor" onChange={this.onChange} value={this.state.filterKeyAuthor} placeholder="작성자 검색" />
+                    <Table style={{ marginTop: "10px" }}>
                         <thead>
                             <tr>
                                 <th>번호</th>
