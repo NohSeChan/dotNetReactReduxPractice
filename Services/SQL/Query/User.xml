@@ -26,4 +26,15 @@
 		INSERT INTO T_USER(ID, PASSWORD, USERNAME, CREATE_DATETIME)
 		VALUES (@Id, @PASSWORD, @USERNAME, GETDATE())
 	</insert>
+
+	<select id="GetUserByUserName">
+		SELECT
+		ID,
+		PASSWORD,
+		USERNAME
+		FROM
+		T_USER
+		WHERE
+		USERNAME = @userName
+	</select>
 </mapper>

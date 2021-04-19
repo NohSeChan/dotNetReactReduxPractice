@@ -73,9 +73,11 @@ namespace Project1.Controllers
 
                 _mssqlDapper.Commit();
 
-                int maxBoardNo = await MBoard.GetMaxBoardNo();
+                //int maxBoardNo = await MBoard.GetMaxBoardNo();
+                //return Json(new { msg = "OK", maxBoardNo=maxBoardNo });
 
-                return Json(new { msg = "OK", maxBoardNo=maxBoardNo });
+                
+                return Json(new { msg = "OK"});
             }
             catch (Exception ex)
             {
@@ -91,9 +93,17 @@ namespace Project1.Controllers
         {
             try
             {
-                var boardDetail = await MBoard.GetBoardDetail(boardNo);
+                _mssqlDapper.BeginTransaction();
+                var r = await MBoard.UpdateBoardView(_mssqlDapper, boardNo);
+                
+                if (r < 1)
+                {
+                    throw new Exception("조회수 갱신중에 오류가 발생했습니다. 관리자에게 문의해주세요");
+                }
+                _mssqlDapper.Commit();
 
-                if (boardDetail != null)
+                var boardDetail = await MBoard.GetBoardDetail(boardNo);
+                if (boardDetail != null && r == 1)
                 {
                     return Json(new { msg = "OK", boardDetail= boardDetail });
                 }
@@ -101,10 +111,10 @@ namespace Project1.Controllers
                 {
                     return Json(new { msg = "FAIL", exceptionMsg = "조회된 게시글이 없습니다" });
                 }
-
             }
             catch (Exception ex)
             {
+                _mssqlDapper.Rollback();
                 return Json(new { msg = "FAIL", exceptionMsg = ex.Message });
             }
         }

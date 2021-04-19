@@ -48,5 +48,11 @@ namespace Project1.Models.Board
         {
             return await mssqlDapper.ExecuteFromXmlAsync("Board.xml", "DeleteBoard", this);
         }
+
+        public static async Task<int> UpdateBoardView(MSSQLDapper mssqlDapper, int boardNo)
+        {
+            return await mssqlDapper.ExecuteFromXmlAsync("Board.xml", "UpdateBoardView", new { BOARDNO = boardNo});
+        }
+        
     }
 }

@@ -48,4 +48,12 @@
 		DELETE FROM T_BOARD
 		WHERE BOARDNO = @BOARDNO		
 	</delete>
+
+	<update id="UpdateBoardView">
+		UPDATE T_BOARD
+		SET 
+			BOARDVIEW=BOARDVIEW+1
+		WHERE BOARDNO=@BOARDNO;
+	</update>
+	
 </mapper>

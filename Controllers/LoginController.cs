@@ -87,5 +87,51 @@ namespace Project1.Controllers
             return await LoginPost(input);
         }
 
+        [HttpGet]
+        [Route("SelectUserById")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SelectUserById(string id)
+        {
+            try
+            {
+                var userInfo = await MUser.GetUserById(id);
+                
+                if (userInfo != null)
+                {
+                    return Json(new { msg = "DUPLICATE" });
+                } else
+                {
+                    return Json(new { msg = "OK" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = "FAIL", exceptionMsg = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("SelectUserByUserName")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SelectUserByUserName(string userName)
+        {
+            try
+            {
+                var userInfo = await MUser.GetUserByUserName(userName);
+
+                if (userInfo != null)
+                {
+                    return Json(new { msg = "DUPLICATE" });
+                }
+                else
+                {
+                    return Json(new { msg = "OK" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = "FAIL", exceptionMsg = ex.Message });
+            }
+        }
     }
 }

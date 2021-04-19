@@ -25,7 +25,8 @@ interface State {
 }
 
 interface Props {
-    writeComplete: (maxBoardNo: number, boardTitle: string, boardAuthor: string) => void;
+/*writeComplete: (maxBoardNo: number, boardTitle: string, boardAuthor: string) => void;*/
+    writeComplete: () => void;
     moveList: () => void;
     boardDetail: BoardDetailType;
     status: string;
@@ -96,7 +97,8 @@ class BoardWrite extends Component<Props, State> {
                 .then(res => res.json())
                 .then(data => {
                     if (data.msg === 'OK') {
-                        this.props.writeComplete(data.maxBoardNo, this.state.boardTitle, this.state.boardAuthor);
+                        //this.props.writeComplete(data.maxBoardNo, this.state.boardTitle, this.state.boardAuthor);
+                        this.props.writeComplete();
                     } else if (data.msg === 'FAIL') {
                         alert(data.exceptionMsg);
                     }
@@ -153,6 +155,7 @@ class BoardWrite extends Component<Props, State> {
                                     value={this.state.boardTitle}
                                     onChange={this.onChange}
                                     placeholder="제목을 입력해주세요"
+                                    maxLength={50}
                                 />
                             </td>
                         </tr>

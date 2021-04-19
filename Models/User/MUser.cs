@@ -27,7 +27,10 @@ namespace Project1.Models.User
         {
             return await mssqlDapper.ExecuteFromXmlAsync("User.xml", "InsertUser", this);
         }
-    }
 
-    
+        public static async Task<MUser> GetUserByUserName(string userName)
+        {
+            return (await MSSQLDapper.Instance.GetFromXmlQueryAsync<MUser>("User.xml", "GetUserByUserName", new { userName = userName })).FirstOrDefault();
+        }
+    }
 }

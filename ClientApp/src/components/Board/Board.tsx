@@ -91,19 +91,27 @@ class Board extends Component<any> {
         };
     }
 
-    handleWriteComplete = (maxBoardNo: number, boardTitle: string, boardAuthor: string) => {
-        let newBoard = {
-            boardno: maxBoardNo,
-            boardtitle: boardTitle,
-            boardauthor: boardAuthor,
-            boardview: 0
-        }
+    //handleWriteComplete = (maxBoardNo: number, boardTitle: string, boardAuthor: string) => {
+    //    let newBoard = {
+    //        boardno: maxBoardNo,
+    //        boardtitle: boardTitle,
+    //        boardauthor: boardAuthor,
+    //        boardview: 0
+    //    }
 
+    //    this.setState({
+    //        status: 'read',
+    //        boardList: [newBoard, ...this.state.boardList]
+    //    });
+    //}
+
+    handleWriteComplete = () => {
         this.setState({
             status: 'read',
-            boardList: [newBoard, ...this.state.boardList]
         });
+        this.getBoardList();
     }
+
 
     handleReadContents = (boardno: number) => {
         fetch(`BoardDetail?boardNo=${boardno}`)
