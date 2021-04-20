@@ -24,7 +24,7 @@ namespace Project1.Models.Board
         public string ReplyContents { get; set; }
         public DateTime ReplyCreateTime { get; set; }
         public string BOARDREPLYUSERNAME { get; set; }
-        public string REPLYREPLY { get; set; }
+        public int P_REPLYID { get; set; }
 
         public async static Task<IEnumerable<MBoard>> GetBoardList(int page)
         {
@@ -68,7 +68,14 @@ namespace Project1.Models.Board
 
         public async Task<int> InsertBoardReply(MSSQLDapper mssqlDapper)
         {
-            return await mssqlDapper.ExecuteFromXmlAsync("Board.xml", "InsertBoardReply", this);
+            await mssqlDapper.ExecuteFromXmlAsync("Board.xml", "InsertBoardReply", this);
+
+            return await mssqlDapper.ExecuteFromXmlAsync("Board.xml", "Update_P_ReplyId", new { });
+        }
+
+        public async Task<int> InsertBoardReplyReply(MSSQLDapper mssqlDapper)
+        {
+            return await mssqlDapper.ExecuteFromXmlAsync("Board.xml", "InsertBoardReplyReply", this);
         }
     }
 }

@@ -175,6 +175,9 @@ class BoardContents extends Component<Props> {
                             <td colSpan={3}>
                                 <BoardReply
                                     replyList={this.state.replyList}
+                                    boardNo={this.props.boardNo}
+                                    isLogin={this.state.isLogin}
+                                    draw={this.getBoardReplyList}
                                 />
                             </td>
                         </tr>

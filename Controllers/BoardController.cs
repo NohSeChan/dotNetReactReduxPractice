@@ -200,7 +200,6 @@ namespace Project1.Controllers
         [Route("WriteBoardReply")]
         public async Task<IActionResult> WriteBoardReply([FromBody] MBoard input)
         {
-
             try
             {
                 var principal = new ClaimsPrincipal(_httpContextAccessor.HttpContext.User.Identity);
@@ -212,7 +211,7 @@ namespace Project1.Controllers
 
                 if (r < 1)
                 {
-                    throw new Exception("게시글 작성 중 오류가 발생했습니다. 관리자에게 문의해주세요");
+                    throw new Exception("댓글 작성 중 오류가 발생했습니다. 관리자에게 문의해주세요");
                 }
 
                 _mssqlDapper.Commit();
@@ -226,5 +225,34 @@ namespace Project1.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("WriteBoardReplyReply")]
+        public async Task<IActionResult> WriteBoardReplyReply([FromBody] MBoard input)
+        {
+
+            try
+            {
+                var principal = new ClaimsPrincipal(_httpContextAccessor.HttpContext.User.Identity);
+                var loginUsername = principal.Claims.FirstOrDefault(x => x.Type == "USERNAME")?.Value;
+                input.BOARDREPLYUSERNAME = loginUsername;
+
+                _mssqlDapper.BeginTransaction();
+                int r = await input.InsertBoardReplyReply(_mssqlDapper);
+
+                if (r < 1)
+                {
+                    throw new Exception("댓글 작성 중 오류가 발생했습니다. 관리자에게 문의해주세요");
+                }
+
+                _mssqlDapper.Commit();
+
+                return Json(new { msg = "OK" });
+            }
+            catch (Exception ex)
+            {
+                _mssqlDapper.Rollback();
+                return Json(new { msg = "FAIL", exceptionMsg = ex.Message });
+            }
+        }
     }
 }
