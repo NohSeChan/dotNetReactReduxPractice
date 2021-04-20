@@ -25,7 +25,8 @@ class BoardContents extends Component<Props> {
     state = {
         showUpdateDeleteBtn: false,
         replyList: [],
-        replyInput: ''
+        replyInput: '',
+        isLogin: false,
     }
 
     componentDidMount() {
@@ -41,17 +42,18 @@ class BoardContents extends Component<Props> {
             });
         }
 
-        fetch(`GetBoardReply?boardNo=${this.props.boardNo}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.msg === 'OK') {
-                    this.setState({
-                        replyList: data.boardReply
-                    });
-                } else if (data.msg === 'FAIL') {
-                    alert(data.exceptionMsg);
-                }
+        this.getBoardReplyList();
+
+        var myCookie = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
+        if (myCookie && myCookie[2] !== "" && !this.state.isLogin) {
+            this.setState({
+                isLogin: true
             });
+        } else {
+            this.setState({
+                isLogin: false
+            });
+        }
     }
 
     handleMoveList = () => {
@@ -78,7 +80,7 @@ class BoardContents extends Component<Props> {
                 .then(res => res.json())
                 .then(data => {
                     if (data.msg === 'OK') {
-                        this.props.deleteComplete(this.props.boardNo);
+                        
                     } else if (data.msg === 'FAIL') {
                         alert(data.exceptionMsg);
                     }
@@ -86,13 +88,57 @@ class BoardContents extends Component<Props> {
         }
     }
 
+    getBoardReplyList = () => {
+        fetch(`GetBoardReply?boardNo=${this.props.boardNo}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.msg === 'OK') {
+                    this.setState({
+                        replyList: data.boardReply
+                    });
+                } else if (data.msg === 'FAIL') {
+                    alert(data.exceptionMsg);
+                }
+            });
+    }
+
+
     onChange = (e: React.FormEvent<HTMLInputElement>) => {
         this.setState({
             [e.currentTarget.name]: e.currentTarget.value
         });
     }
 
-    public render() {
+    handleSubmit = () => {
+        if (!this.state.isLogin) {
+            alert('댓글 기능은 로그인 사용자만 이용가능합니다.');
+        } else {
+            fetch('WriteBoardReply', {
+                method: 'post',
+                body: JSON.stringify({
+                    boardNo: this.props.boardNo,
+                    ReplyContents: this.state.replyInput
+                }),
+                headers: {
+                    'Accept': 'application/json; charset=utf-8',
+                    'Content-Type': 'application/json; charset=UTF-8'
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.msg === 'OK') {
+                        this.getBoardReplyList();
+                        this.setState({
+                            replyInput: ''
+                        });
+                    } else if (data.msg === 'FAIL') {
+                        alert(data.exceptionMsg);
+                    }
+                })
+        }
+    };
+
+    render() {
         return (
             <div>
                 <h1>기본 게시판 구현</h1>
@@ -135,8 +181,8 @@ class BoardContents extends Component<Props> {
                         <tr>
                             <th>댓글작성</th>
                             <td colSpan={3}>
-                                <input name="replyInput" value={this.state.replyInput} onChange={this.onChange} style={{ width: "840px" }} placeholder="댓글작성" maxLength={50} /> &nbsp;
-                                <button>등록</button>
+                                <input name="replyInput" value={this.state.replyInput} onChange={this.onChange} style={{ width: "930px" }} placeholder="댓글작성" maxLength={50} /> &nbsp;
+                                <button onClick={this.handleSubmit}>등록</button>
                             </td>
                         </tr>
                     </tfoot>

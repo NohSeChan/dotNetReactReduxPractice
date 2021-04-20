@@ -21,12 +21,10 @@ namespace Project1.Models.Board
 
         // Relpy
         public int ReplyId { get; set; }
-        public int ReplyNO { get; set; }
         public string ReplyContents { get; set; }
         public DateTime ReplyCreateTime { get; set; }
-        public int ReplyReplyNo { get; set; }
-        public string ReplyReplyContents { get; set; }
-        public DateTime ReplyReplyCreateTime { get; set; }
+        public string BOARDREPLYUSERNAME { get; set; }
+        public string REPLYREPLY { get; set; }
 
         public async static Task<IEnumerable<MBoard>> GetBoardList(int page)
         {
@@ -66,6 +64,11 @@ namespace Project1.Models.Board
         public static async Task<IEnumerable<MBoard>> GetBoardReply(int boardNo)
         {
             return await MSSQLDapper.Instance.GetFromXmlQueryAsync<MBoard>("Board.xml", "SelectBoardReply", new { BOARDNO = boardNo });
+        }
+
+        public async Task<int> InsertBoardReply(MSSQLDapper mssqlDapper)
+        {
+            return await mssqlDapper.ExecuteFromXmlAsync("Board.xml", "InsertBoardReply", this);
         }
     }
 }
