@@ -19,6 +19,15 @@ namespace Project1.Models.Board
         public DateTime CREATE_DATETIME { get; set; }
         public string BOARDUSERID { get; set; }
 
+        // Relpy
+        public int ReplyId { get; set; }
+        public int ReplyNO { get; set; }
+        public string ReplyContents { get; set; }
+        public DateTime ReplyCreateTime { get; set; }
+        public int ReplyReplyNo { get; set; }
+        public string ReplyReplyContents { get; set; }
+        public DateTime ReplyReplyCreateTime { get; set; }
+
         public async static Task<IEnumerable<MBoard>> GetBoardList(int page)
         {
             return await MSSQLDapper.Instance.GetFromXmlQueryAsync<MBoard>("Board.xml", "SelectBoardList", new { page = page});
@@ -53,6 +62,10 @@ namespace Project1.Models.Board
         {
             return await mssqlDapper.ExecuteFromXmlAsync("Board.xml", "UpdateBoardView", new { BOARDNO = boardNo});
         }
-        
+
+        public static async Task<IEnumerable<MBoard>> GetBoardReply(int boardNo)
+        {
+            return await MSSQLDapper.Instance.GetFromXmlQueryAsync<MBoard>("Board.xml", "SelectBoardReply", new { BOARDNO = boardNo });
+        }
     }
 }

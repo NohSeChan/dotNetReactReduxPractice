@@ -5,6 +5,7 @@ import { ApplicationState } from '../../store';
 import * as CounterStore from '../../store/Counter';
 import { Link } from 'react-router-dom';
 import { Table } from 'reactstrap';
+import BoardReply from './BoardReply';
 
 
 interface Props {
@@ -22,7 +23,9 @@ interface Props {
 
 class BoardContents extends Component<Props> {
     state = {
-        showUpdateDeleteBtn: false
+        showUpdateDeleteBtn: false,
+        replyList: [],
+        replyInput: ''
     }
 
     componentDidMount() {
@@ -37,6 +40,18 @@ class BoardContents extends Component<Props> {
                 showUpdateDeleteBtn: false
             });
         }
+
+        fetch(`GetBoardReply?boardNo=${this.props.boardNo}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.msg === 'OK') {
+                    this.setState({
+                        replyList: data.boardReply
+                    });
+                } else if (data.msg === 'FAIL') {
+                    alert(data.exceptionMsg);
+                }
+            });
     }
 
     handleMoveList = () => {
@@ -71,6 +86,12 @@ class BoardContents extends Component<Props> {
         }
     }
 
+    onChange = (e: React.FormEvent<HTMLInputElement>) => {
+        this.setState({
+            [e.currentTarget.name]: e.currentTarget.value
+        });
+    }
+
     public render() {
         return (
             <div>
@@ -102,6 +123,23 @@ class BoardContents extends Component<Props> {
                             </td>
                         </tr>
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>댓글</th>
+                            <td colSpan={3}>
+                                <BoardReply
+                                    replyList={this.state.replyList}
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>댓글작성</th>
+                            <td colSpan={3}>
+                                <input name="replyInput" value={this.state.replyInput} onChange={this.onChange} style={{ width: "840px" }} placeholder="댓글작성" maxLength={50} /> &nbsp;
+                                <button>등록</button>
+                            </td>
+                        </tr>
+                    </tfoot>
                 </Table>
                 
                 <button onClick={this.handleMoveList}>목록</button>

@@ -172,5 +172,28 @@ namespace Project1.Controllers
                 return Json(new { msg = "FAIL", exceptionMsg = ex.Message });
             }
         }
+
+        [HttpGet]
+        [Route("GetBoardReply")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetBoardReply(int boardNo)
+        {
+            try
+            {
+                var boardReply = await MBoard.GetBoardReply(boardNo);
+                if (boardReply != null)
+                {
+                    return Json(new { msg = "OK", boardReply = boardReply });
+                }
+                else
+                {
+                    return Json(new { msg = "EMPTY"});
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = "FAIL", exceptionMsg = ex.Message });
+            }
+        }
     }
 }
