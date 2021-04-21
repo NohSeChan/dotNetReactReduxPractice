@@ -63,6 +63,19 @@ class BoardWrite extends Component<Props, State> {
             height: 300,                 // 에디터 높이
             lang:'ko-KR',
             focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+            toolbar: [
+                ['fontsize', ['fontsize']],
+                ['style', ['style']],
+                ['style', ['bold', 'italic', 'underline']],
+                ['font', ['strikethrough']],
+                ['color', ['color']],
+                ['para', ['paragraph']],
+                ['height', ['height']],
+                ['insert', ['table']],
+                ['insert', ['picture']],
+                ['insert', ['link']],
+                ['misc', ['codeview']],
+            ],
             placeholder: '게시글을 입력해주세요',
             callbacks: {	//여기 부분이 이미지를 첨부하는 부분
                 onImageUpload: function (files: any) {
@@ -95,7 +108,6 @@ class BoardWrite extends Component<Props, State> {
                 processData: false,
                 success: function (data) {
                     //항상 업로드된 파일의 url이 있어야 한다.
-                    console.log(data.url);
                     $(editor).summernote('insertImage', data.url);
                     $('#imageBoard > ul').append('<li><img src="' + data.url + '" width="480" height="auto"/></li>');
                 }

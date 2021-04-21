@@ -62,7 +62,6 @@ class Board extends Component<any> {
         if (document.location.pathname === '/board/write') {
             this.handleWriteToggle();
         } else if (document.location.pathname.includes('/board/contents')) {
-            console.log(document.location);
             var boardNo = document.location.pathname.split('/')[3];
             this.handleReadContents(Number(boardNo));
         } else {
@@ -146,9 +145,6 @@ class Board extends Component<any> {
                             boardUserId: data.boardDetail.boarduserid
                         }
                     });
-                    if (!document.location.pathname.includes('/board/contents')) {
-                        this.props.history.push('/board/contents/' + boardno);
-                    }
                 } else if (data.msg === 'FAIL') {
                     alert(data.exceptionMsg);
                 }
@@ -189,12 +185,13 @@ class Board extends Component<any> {
             <tr key={v.boardno}>
                 <td>{v.boardno}</td>
                 <td>
-                    <a href="#" onClick={(e: any) => {
-                        e.preventDefault();
-                        this.handleReadContents(v.boardno);
-                    }}>
-                        {v.boardtitle} [{v.replycount}]
-                    </a>
+                        <a href="#" onClick={(e: any) => {
+                            e.preventDefault();
+                        }}>
+                        <Link to={`board/contents/${v.boardno}`} >
+                            {v.boardtitle} [{v.replycount}]
+                        </Link>
+                        </a>
                 </td>
                 <td>{v.boardauthor}</td>
                 <td>{v.boardview}</td>
