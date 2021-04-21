@@ -20,7 +20,6 @@ interface Props {
     boardNo: number;
     isLogin: boolean;
     draw: () => void;
-    replyInput: React.RefObject<any>;
 }
 
 class BoardReply extends Component<Props> {

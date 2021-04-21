@@ -48,8 +48,6 @@ class Board extends Component<any> {
     }
 
     componentDidMount() {
-        this.getBoardList();
-
         var myCookie = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
         if (myCookie && myCookie[2] !== "" && !this.state.isLogin) {
             this.setState({
@@ -60,7 +58,23 @@ class Board extends Component<any> {
                 isLogin: false
             });
         }
+
+        if (document.location.pathname === '/board/write') {
+            this.handleWriteToggle();
+        } else if (document.location.pathname.includes('/board/contents')) {
+            console.log(document.location);
+            var boardNo = document.location.pathname.split('/')[3];
+            this.handleReadContents(Number(boardNo));
+        } else {
+            this.getBoardList();
+        }
     }
+
+    //shouldComponentUpdate(nextProps: any, nextState: any) {
+    //    console.log('this.state', this.state);
+    //    console.log('nextState', nextState);
+    //    return true;
+    //}
 
 
     getBoardList = () => {
@@ -77,21 +91,20 @@ class Board extends Component<any> {
             });
     }
 
-    componentDidUpdate(prevProps: any, prevState: any) {
-    }
 
     handleWriteToggle = () => {
-        if (this.state.isLogin) {
-            this.setState({
-                status: 'write',
-                boardDetail: {
-                    boardTitle: '',
-                    boardContents: '',
-                }
-            })
-        } else {
-            alert('로그인을 해주세요');
-        };
+        this.setState({
+            status: 'write',
+            boardDetail: {
+                boardTitle: '',
+                boardContents: '',
+            }
+        })
+    }
+
+
+    moveLoginPage = () => {
+        alert('로그인을 해주세요');
     }
 
     //handleWriteComplete = (maxBoardNo: number, boardTitle: string, boardAuthor: string) => {
@@ -133,6 +146,9 @@ class Board extends Component<any> {
                             boardUserId: data.boardDetail.boarduserid
                         }
                     });
+                    if (!document.location.pathname.includes('/board/contents')) {
+                        this.props.history.push('/board/contents/' + boardno);
+                    }
                 } else if (data.msg === 'FAIL') {
                     alert(data.exceptionMsg);
                 }
@@ -184,7 +200,6 @@ class Board extends Component<any> {
                 <td>{v.boardview}</td>
             </tr>
         ));
-
         if (this.state.status === 'read') {
             return (
                 <React.Fragment>
@@ -207,9 +222,13 @@ class Board extends Component<any> {
                     </Table>
                     <br />
                     {
+                        //this.state.isLogin
+                        //    ? <button type="button" onClick={this.handleWriteToggle}>작성</button>
+                        //    : <Link to='/login'><button type="button" onClick={this.handleWriteToggle}>작성</button></Link>
+
                         this.state.isLogin
-                            ? <button type="button" onClick={this.handleWriteToggle}>작성</button>
-                            : <Link to='/login'><button type="button" onClick={this.handleWriteToggle}>작성</button></Link>
+                            ? <Link to='board/write'><button type="button" onClick={this.handleWriteToggle}>작성</button></Link>
+                            : <Link to='/login'><button type="button" onClick={this.moveLoginPage}>작성</button></Link>
                     }
                 </React.Fragment>
             );
@@ -222,6 +241,7 @@ class Board extends Component<any> {
                         boardDetail={this.state.boardDetail}
                         status={this.state.status}
                         updateComplete={this.handleReadContents}
+                        history={this.props.history}
                     />
                 </React.Fragment>
             );
@@ -239,6 +259,7 @@ class Board extends Component<any> {
                         moveList={this.handleMoveList}
                         updateTransform={this.handleUpdateTransform}
                         deleteComplete={this.handleDeleteComplete}
+                        history={this.props.history}
                     />
                 </React.Fragment>
             );

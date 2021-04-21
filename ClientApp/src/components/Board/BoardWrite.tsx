@@ -11,6 +11,7 @@ import 'summernote/dist/lang/summernote-ko-KR';
 import 'summernote/dist/summernote.css';
 import 'bootstrap';
 import { Table } from 'reactstrap';
+import { History } from 'history';
 
 //type BoardProps =
 //    CounterStore.CounterState &
@@ -31,6 +32,7 @@ interface Props {
     boardDetail: BoardDetailType;
     status: string;
     updateComplete: (boardNo: number) => void;
+    history: History;
 }
 
 interface BoardDetailType {
@@ -51,7 +53,6 @@ class BoardWrite extends Component<Props, State> {
     }
 
     componentDidMount() {
-        console.log(this.state);
         var myCookie = document.cookie.match('(^|;) ?' + 'userName' + '=([^;]*)(;|$)');
         var userNameAscii = myCookie && myCookie[2] || '';
         this.setState({
@@ -97,8 +98,8 @@ class BoardWrite extends Component<Props, State> {
                 .then(res => res.json())
                 .then(data => {
                     if (data.msg === 'OK') {
-                        //this.props.writeComplete(data.maxBoardNo, this.state.boardTitle, this.state.boardAuthor);
-                        this.props.writeComplete();
+                        //this.props.writeComplete();
+                        this.props.history.push('/board');
                     } else if (data.msg === 'FAIL') {
                         alert(data.exceptionMsg);
                     }
@@ -172,7 +173,7 @@ class BoardWrite extends Component<Props, State> {
                 </Table>
                 <button onClick={this.handleSubmit}>작성완료</button>
                 &nbsp;&nbsp;
-                <button onClick={this.handleMoveList}>취소</button>
+                <Link to='/board'><button onClick={this.handleMoveList}>취소</button></Link>
             </React.Fragment>
         );
     }

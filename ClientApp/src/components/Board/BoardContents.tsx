@@ -6,6 +6,7 @@ import * as CounterStore from '../../store/Counter';
 import { Link } from 'react-router-dom';
 import { Table } from 'reactstrap';
 import BoardReply from './BoardReply';
+import { History } from 'history';
 
 
 interface Props {
@@ -19,6 +20,7 @@ interface Props {
     moveList: () => void;
     updateTransform: () => void;
     deleteComplete: (boardNo: number) => void;
+    history: History;
 }
 
 class BoardContents extends Component<Props> {
@@ -57,7 +59,8 @@ class BoardContents extends Component<Props> {
     }
 
     handleMoveList = () => {
-        this.props.moveList();
+        //this.props.moveList();
+        this.props.history.push('/board');
     }
 
     handleUpdate = () => {
@@ -80,7 +83,8 @@ class BoardContents extends Component<Props> {
                 .then(res => res.json())
                 .then(data => {
                     if (data.msg === 'OK') {
-                        this.props.moveList();
+                        //this.props.moveList();
+                        this.handleMoveList();
                     } else if (data.msg === 'FAIL') {
                         alert(data.exceptionMsg);
                     }
