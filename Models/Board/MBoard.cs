@@ -18,6 +18,7 @@ namespace Project1.Models.Board
         public int BOARDVIEW { get; set; }
         public DateTime CREATE_DATETIME { get; set; }
         public string BOARDUSERID { get; set; }
+        public int REPLYCOUNT { get; set; }
 
         // Relpy
         public int ReplyId { get; set; }

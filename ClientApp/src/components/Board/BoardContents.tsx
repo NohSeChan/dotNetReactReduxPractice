@@ -80,7 +80,7 @@ class BoardContents extends Component<Props> {
                 .then(res => res.json())
                 .then(data => {
                     if (data.msg === 'OK') {
-                        
+                        this.props.moveList();
                     } else if (data.msg === 'FAIL') {
                         alert(data.exceptionMsg);
                     }
@@ -138,6 +138,12 @@ class BoardContents extends Component<Props> {
         }
     };
 
+    handleKeyPress = (e: any) => {
+        if (e.key === "Enter") {
+            this.handleSubmit();
+        }
+    }
+
     render() {
         return (
             <div>
@@ -184,7 +190,7 @@ class BoardContents extends Component<Props> {
                         <tr>
                             <th>댓글작성</th>
                             <td colSpan={3}>
-                                <input name="replyInput" value={this.state.replyInput} onChange={this.onChange} style={{ width: "930px" }} placeholder="댓글작성" maxLength={50} /> &nbsp;
+                                <input name="replyInput" value={this.state.replyInput} onChange={this.onChange} style={{ width: "930px" }} placeholder="댓글작성" maxLength={50} onKeyPress={this.handleKeyPress} /> &nbsp;
                                 <button onClick={this.handleSubmit}>등록</button>
                             </td>
                         </tr>

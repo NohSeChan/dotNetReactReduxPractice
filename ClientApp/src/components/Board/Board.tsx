@@ -29,6 +29,7 @@ class Board extends Component<any> {
                 boardtitle: '',
                 boardauthor: '',
                 boardview: 0,
+                replycount: 0,
             }
         ],
         status: 'read',
@@ -176,7 +177,7 @@ class Board extends Component<any> {
                         e.preventDefault();
                         this.handleReadContents(v.boardno);
                     }}>
-                        {v.boardtitle}
+                        {v.boardtitle} [{v.replycount}]
                     </a>
                 </td>
                 <td>{v.boardauthor}</td>

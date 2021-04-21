@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../store';
@@ -20,6 +20,7 @@ interface Props {
     boardNo: number;
     isLogin: boolean;
     draw: () => void;
+    replyInput: React.RefObject<any>;
 }
 
 class BoardReply extends Component<Props> {
@@ -28,13 +29,21 @@ class BoardReply extends Component<Props> {
         replyReplyInput: '',
     }
 
+    replyInputRef1 = createRef<HTMLInputElement>(); 
+    replyInputRef2 = createRef<HTMLInputElement>();
+
+    componentDidUpdate() {
+        this.replyInputRef1.current && this.replyInputRef1.current.focus();
+        this.replyInputRef2.current && this.replyInputRef2.current.focus();
+    }
+
     handleReplyModeTransfer = (e: any, replyId: number) => {
         e.preventDefault();
         if (replyId !== this.state.replyReply) {
             this.setState({
                 replyReply: replyId,
                 replyReplyInput: '',
-            })
+            });
         } else if (replyId === this.state.replyReply) {
             this.setState({
                 replyReply: 0,
@@ -70,6 +79,7 @@ class BoardReply extends Component<Props> {
                     if (data.msg === 'OK') {
                         this.setState({
                             replyReplyInput: '',
+                            replyReply: 0
                         });
                         this.props.draw();
                     } else if (data.msg === 'FAIL') {
@@ -79,6 +89,13 @@ class BoardReply extends Component<Props> {
         }
     }
 
+    handleKeyPress = (e: any) => {
+        if (e.key === "Enter") {
+            this.handleSubmitReplyReply();
+        }
+    };
+
+    
     public render() {
         const lastIndex = this.props.replyList.map((v) => {
             if (v.p_REPLYID === this.state.replyReply) {
@@ -98,7 +115,7 @@ class BoardReply extends Component<Props> {
                         <li style={{ listStyle: 'none' }}>
                             <span style={{ color: "gray" }}>by.{v1.boardreplyusername} : </span>{v1.replyContents} <a href="#" onClick={(e) => this.handleReplyModeTransfer(e, v1.replyId)}> - [답글달기]</a><span style={{ float: "right", paddingRight: "30px", color: "gray" }}>{v1.replyCreateTime.substr(0, 10)}</span>
                         </li>
-                        {inputReplyIndex === v1.replyId ? <div><input style={{ width: "880px" }} name="replyReplyInput" onChange={this.onChange} value={this.state.replyReplyInput} placeholder="답글작성" />&nbsp;&nbsp;<button onClick={this.handleSubmitReplyReply}>등록</button></div> : null}
+                        {inputReplyIndex === v1.replyId ? <div><input type="type" style={{ width: "880px" }} name="replyReplyInput" onChange={this.onChange} value={this.state.replyReplyInput} placeholder="답글작성" onKeyPress={this.handleKeyPress} ref={this.replyInputRef1} />&nbsp;&nbsp;<button onClick={this.handleSubmitReplyReply}>등록</button></div> : null}
                     </div>
                 )
                 // 답글의 답글이면
@@ -107,7 +124,7 @@ class BoardReply extends Component<Props> {
                         <li style={{ listStyle: 'none' }}>
                             &nbsp;&nbsp;▶<span style={{ color: "gray" }}>by.{v1.boardreplyusername} : </span> {v1.replyContents}<span style={{ float: "right", paddingRight: "30px", color: "gray" }}>{v1.replyCreateTime.substr(0, 10)}</span>
                         </li>
-                        {inputReplyIndex === v1.replyId ? <div><input style={{ width: "880px" }} name="replyReplyInput" onChange={this.onChange} value={this.state.replyReplyInput} placeholder="답글작성" />&nbsp;&nbsp;<button onClick={this.handleSubmitReplyReply}>등록</button></div> : null}    
+                        {inputReplyIndex === v1.replyId ? <div><input type="type" style={{ width: "880px" }} name="replyReplyInput" onChange={this.onChange} value={this.state.replyReplyInput} placeholder="답글작성" onKeyPress={this.handleKeyPress} ref={this.replyInputRef2} />&nbsp;&nbsp;<button onClick={this.handleSubmitReplyReply}>등록</button></div> : null}    
                     </div>
                 )
         ));

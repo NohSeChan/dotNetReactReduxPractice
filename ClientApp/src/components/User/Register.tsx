@@ -23,11 +23,13 @@ class Register extends React.PureComponent<LoginProps> {
         userNameCheck: false,
         userNameCheckMsg: '',
         passwordLegnthCheck: false,
-        passwordEqualCheck: false
+        passwordEqualCheck: false,
+        passwordValidationCheck: false,
+        passwordValdiationCheckMsg: '',
     }
 
     regExp = /[^a-zA-Z0-9]/;
-
+    regExp2 = /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^\w\s]).*/;
 
     handleChange = (e: any) => {
         this.setState({
@@ -44,14 +46,28 @@ class Register extends React.PureComponent<LoginProps> {
                 idFormCheck: true,
                 idFormCheckMsg: '',
             });
-        } else if (e.target.name === 'password' && e.target.value.length < 8) {
-            this.setState({
-                passwordLegnthCheck: false
-            });
-        } else if (e.target.name === 'password' && e.target.value.length >= 8) {
-            this.setState({
-                passwordLegnthCheck: true
-            });
+        } else if (e.target.name === 'password') {
+            if (e.target.value.match(this.regExp2) === null) {
+                this.setState({
+                    passwordValidationCheck: false,
+                    passwordValdiationCheckMsg: '※ 비밀번호는 영문자/숫자/특수문자가 조합되어야합니다'
+                });
+            } else {
+                this.setState({
+                    passwordValidationCheck: true,
+                    passwordValdiationCheckMsg: ''
+                });
+            }
+
+            if (e.target.value.length < 8) {
+                this.setState({
+                    passwordLegnthCheck: false
+                });
+            } else {
+                this.setState({
+                    passwordLegnthCheck: true,
+                });
+            }
         } else if (e.target.name === 'password2' && this.state.password === e.target.value) {
             this.setState({
                 passwordEqualCheck: true
@@ -59,7 +75,7 @@ class Register extends React.PureComponent<LoginProps> {
         } else if (e.target.name === 'password2' && this.state.password !== e.target.value) {
             this.setState({
                 passwordEqualCheck: false
-            })
+            });
         }
     };
 
@@ -82,6 +98,12 @@ class Register extends React.PureComponent<LoginProps> {
             return;
         } else if (!this.state.passwordLegnthCheck) {
             alert('비밀번호는 8자 이상 입력해주세요');
+            return;
+        } else if (!this.state.passwordValidationCheck) {
+            alert(this.state.passwordValdiationCheckMsg);
+            return;
+        } else if (!this.state.passwordEqualCheck) {
+            alert('패스워드를 일치시켜주세요');
             return;
         }
         
@@ -201,7 +223,8 @@ class Register extends React.PureComponent<LoginProps> {
                             placeholder="패스워드 입력"
                         />
                         &nbsp; {!this.state.passwordLegnthCheck && this.state.password.length > 0 ? <label style={{ color: 'red' }}>※ 패스워드는 8자 이상 입력해주세요</label> : null}
-                        {this.state.passwordLegnthCheck ? <label style={{ color: 'green' }}>적절한 비밀번호입니다</label> : null}
+                        &nbsp; {!this.state.passwordValidationCheck && this.state.password.length > 0 ? <label style={{ color: 'red' }}>{this.state.passwordValdiationCheckMsg}</label> : null}
+                        {this.state.passwordLegnthCheck && this.state.passwordValidationCheck ? <label style={{ color: 'green' }}>적절한 비밀번호입니다</label> : null}
                     </div>
                     <div>
                         <label>패스워드 확인 : &nbsp;</label>
