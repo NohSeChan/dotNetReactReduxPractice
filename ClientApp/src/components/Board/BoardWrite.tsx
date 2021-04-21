@@ -64,8 +64,47 @@ class BoardWrite extends Component<Props, State> {
             lang:'ko-KR',
             focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
             placeholder: '게시글을 입력해주세요',
+            callbacks: {	//여기 부분이 이미지를 첨부하는 부분
+                onImageUpload: function (files: any) {
+                    uploadSummernoteImageFile(files[0], this);
+                },
+                onPaste: function (e: any) {
+                    var clipboardData = e.originalEvent.clipboardData;
+                    if (clipboardData && clipboardData.items && clipboardData.items.length) {
+                        var item = clipboardData.items[0];
+                        if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
+                            e.preventDefault();
+                        }
+                    }
+                }
+            }
         });
+
+        /**
+        * 이미지 파일 업로드
+        */
+        const uploadSummernoteImageFile = (file: any, editor: any): void => {
+            var data = new FormData();
+            data.append("file", file);
+            $.ajax({
+                data: data,
+                type: "POST",
+                url: "/uploadSummernoteImageFile",
+                enctype: 'multipart/form-data',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    //항상 업로드된 파일의 url이 있어야 한다.
+                    console.log(data.url);
+                    $(editor).summernote('insertImage', data.url);
+                    $('#imageBoard > ul').append('<li><img src="' + data.url + '" width="480" height="auto"/></li>');
+                }
+            });
     }
+
+    
+}
+
 
     onChange = (e: React.FormEvent<HTMLInputElement>): void => {
         const key = e.currentTarget.name;

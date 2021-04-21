@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Project1.Models.User;
 using Project1.Services;
 using Project1.Services.SQL;
+using System.IO;
 
 namespace Project1
 {
@@ -67,9 +69,17 @@ namespace Project1
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            //app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+            // using Microsoft.Extensions.FileProviders;
+            // using System.IO;
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(env.ContentRootPath, "UploadFiles")),
+                RequestPath = "/UploadFiles"
+            });
             app.UseRouting();
 
             app.UseAuthentication();
