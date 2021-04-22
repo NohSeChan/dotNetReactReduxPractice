@@ -195,15 +195,15 @@ class BoardContents extends Component<Props> {
                             <th>댓글작성</th>
                             <td colSpan={3}>
                                 <input name="replyInput" value={this.state.replyInput} onChange={this.onChange} style={{ width: "930px" }} placeholder="댓글작성" maxLength={50} onKeyPress={this.handleKeyPress} /> &nbsp;
-                                <button onClick={this.handleSubmit}>등록</button>
+                                <button className="btn btn-sm btn-secondary" onClick={this.handleSubmit}>등록</button>
                             </td>
                         </tr>
                     </tfoot>
                 </Table>
                 
-                <button onClick={this.handleMoveList}>목록</button>
+                <button className="btn btn-sm btn-secondary" onClick={this.handleMoveList}>목록</button>
                 {this.state.showUpdateDeleteBtn
-                    ? <>&nbsp;<button onClick={this.handleUpdate}>수정</button>&nbsp;<button onClick={this.handleRemove}>삭제</button></>
+                    ? <>&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleUpdate}>수정</button>&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleRemove}>삭제</button></>
                     : null
                 }
             </div>

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Project1.Models.Board;
 using Project1.Models.User;
 using Project1.Services.SQL;
@@ -39,7 +40,6 @@ namespace Project1.Controllers
             try
             {
                 var boardList = await MBoard.GetBoardList(pageNum);
-
                 if (boardList != null)
                 {
                     return Json(new { msg = "OK", boardList = boardList });

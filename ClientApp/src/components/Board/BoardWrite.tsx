@@ -222,9 +222,9 @@ class BoardWrite extends Component<Props, State> {
                         </tr>
                     </tbody>
                 </Table>
-                <button onClick={this.handleSubmit}>작성완료</button>
+                <button className="btn btn-sm btn-primary" onClick={this.handleSubmit}>작성완료</button>
                 &nbsp;&nbsp;
-                <Link to='/board'><button onClick={this.handleMoveList}>취소</button></Link>
+                <Link to='/board'><button className="btn btn-sm btn-secondary" onClick={this.handleMoveList}>취소</button></Link>
             </React.Fragment>
         );
     }

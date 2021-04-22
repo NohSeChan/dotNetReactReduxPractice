@@ -61,6 +61,8 @@ class Login extends React.PureComponent<LoginProps> {
                         <input
                             type="text"
                             name="id"
+                            className="form-control"
+                            style={{ display: 'inline', width: '180px' }}
                             value={this.state.id}
                             onChange={this.handleChange}
                             placeholder="아이디 입력"
@@ -71,16 +73,18 @@ class Login extends React.PureComponent<LoginProps> {
                         <input
                             type="password"
                             name="password"
+                            className="form-control"
+                            style={{ display: 'inline', width: '180px' }}
                             value={this.state.password}
                             onChange={this.handleChange}
                             placeholder="패스워드 입력"
                         />
                     </div>
-                    <button onClick={this.handleLogin}>
+                    <button className="btn btn-sm btn-primary" onClick={this.handleLogin}>
                         로그인
                     </button>
                     &nbsp;
-                    <Link to='/register'><button type="button">회원가입</button></Link>
+                    <Link to='/register'><button className="btn btn-sm btn-primary" type="button">회원가입</button></Link>
                 </form>
             </React.Fragment>
 

@@ -192,6 +192,8 @@ class Register extends React.PureComponent<LoginProps> {
                         <input
                             type="text"
                             name="id"
+                            className="form-control"
+                            style={{display:'inline', width: '180px'}}
                             value={this.state.id}
                             onChange={this.handleChange}
                             placeholder="아이디 입력"
@@ -206,6 +208,8 @@ class Register extends React.PureComponent<LoginProps> {
                         <input
                             type="text"
                             name="userName"
+                            className="form-control"
+                            style={{ display: 'inline', width: '180px' }}
                             value={this.state.userName}
                             onChange={this.handleChange}
                             placeholder="닉네임 입력"
@@ -218,6 +222,8 @@ class Register extends React.PureComponent<LoginProps> {
                         <input
                             type="password"
                             name="password"
+                            className="form-control"
+                            style={{ display: 'inline', width: '180px' }}
                             value={this.state.password}
                             onChange={this.handleChange}
                             placeholder="패스워드 입력"
@@ -231,6 +237,8 @@ class Register extends React.PureComponent<LoginProps> {
                         <input
                             type="password"
                             name="password2"
+                            className="form-control"
+                            style={{ display: 'inline', width: '180px' }}
                             value={this.state.password2}
                             onChange={this.handleChange}
                             placeholder="패스워드 확인"
@@ -238,11 +246,11 @@ class Register extends React.PureComponent<LoginProps> {
                         &nbsp; {!this.state.passwordEqualCheck && this.state.password2.length > 0 ? <label style={{ color: 'red' }}>※ 패스워드를 일치시켜주세요</label> : null}
                         {this.state.passwordEqualCheck ? <label style={{ color: 'green' }}>비밀번호가 일치합니다</label> : null}
                     </div>
-                    <button onClick={this.handleRegister}>
+                    <button className="btn btn-sm btn-primary" onClick={this.handleRegister}>
                         회원가입
                     </button>
                     &nbsp;
-                    <button onClick={this.handleReset}>
+                    <button className="btn btn-sm btn-secondary" onClick={this.handleReset}>
                         초기화
                     </button>
                 </form>

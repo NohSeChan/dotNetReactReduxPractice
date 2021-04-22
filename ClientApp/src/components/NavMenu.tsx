@@ -3,9 +3,13 @@ import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLi
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
 
-export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }> {
+export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean, homeToggle: boolean, boardToggle: boolean, loginToggle: boolean, registToggle: boolean }> {
     public state = {
-        isOpen: false
+        isOpen: false,
+        homeToggle: true,
+        boardToggle: false,
+        loginToggle: false,
+        registToggle: false,
     };
 
     value = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
@@ -21,7 +25,43 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                     document.location.href = '/';
                 }
             });
+    }
 
+    resetToggleButton = () => {
+        this.setState({
+            homeToggle: false,
+            boardToggle: false,
+            loginToggle: false,
+            registToggle: false,
+        })
+    }
+
+    handleToggleHomeButton = () => {
+        this.resetToggleButton();
+        this.setState({
+            homeToggle: true
+        });
+    }
+
+    handleToggleBoardButton = () => {
+        this.resetToggleButton();
+        this.setState({
+            boardToggle: true
+        });
+    }
+
+    handleToggleLoginButton = () => {
+        this.resetToggleButton();
+        this.setState({
+            loginToggle: true
+        });
+    }
+
+    handleToggleRegistButton = () => {
+        this.resetToggleButton();
+        this.setState({
+            registToggle: true
+        });
     }
 
     public render() {
@@ -29,12 +69,12 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
             <header>
                 <Navbar className="navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" light>
                     <Container>
-                        <NavbarBrand tag={Link} to="/">이카운트 제출용 포트폴리오</NavbarBrand>
+                        <NavbarBrand onClick={this.handleToggleHomeButton} tag={Link} to="/">이카운트 제출용 포트폴리오</NavbarBrand>
                         <NavbarToggler onClick={this.toggle} className="mr-2"/>
                         <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={this.state.isOpen} navbar>
-                            <ul className="navbar-nav flex-grow">
+                            <ul className="nav nav-pills">
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
+                                    <NavLink tag={Link} onClick={this.handleToggleHomeButton} className={this.state.homeToggle ? "nav-link active" : "nav-link" } to="/">Home</NavLink>
                                 </NavItem>
                                 {/*<NavItem>*/}
                                 {/*    <NavLink tag={Link} className="text-dark" to="/counter">카운트</NavLink>*/}
@@ -43,13 +83,13 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                                 {/*    <NavLink tag={Link} className="text-dark" to="/fetch-data">날씨</NavLink>*/}
                                 {/*</NavItem>*/}
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/board">게시판</NavLink>
+                                    <NavLink tag={Link} onClick={this.handleToggleBoardButton} className={this.state.boardToggle ? "nav-link active" : "nav-link"} to="/board">게시판</NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    {this.value && this.value[2] ? null : <NavLink tag={Link} className="text-dark" to="/register">회원가입</NavLink>}
+                                    {this.value && this.value[2] ? null : <NavLink tag={Link} onClick={this.handleToggleRegistButton} className={this.state.registToggle ? "nav-link active" : "nav-link"} to="/register">회원가입</NavLink>}
                                 </NavItem>
                                 <NavItem>
-                                    {this.value && this.value[2] ? <NavLink tag={Link} className="text-dark" onClick={this.handleLogout} to="/">로그아웃</NavLink> : <NavLink tag={Link} className="text-dark" to="/login">로그인</NavLink>}
+                                    {this.value && this.value[2] ? <NavLink tag={Link} className="nav-link" onClick={this.handleLogout} to="/">로그아웃</NavLink> : <NavLink tag={Link} onClick={this.handleToggleLoginButton} className={this.state.loginToggle ? "nav-link active" : "nav-link"} to="/login">로그인</NavLink>}
                                 </NavItem>
                             </ul>
                         </Collapse>

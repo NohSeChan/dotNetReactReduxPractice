@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { Table } from 'reactstrap';
 import BoardContents from './BoardContents';
 import BoardWrite from './BoardWrite';
+import 'bootstrap';
 
 //type BoardProps =
 //    CounterStore.CounterState &
@@ -185,13 +186,9 @@ class Board extends Component<any> {
             <tr key={v.boardno}>
                 <td>{v.boardno}</td>
                 <td>
-                        <a href="#" onClick={(e: any) => {
-                            e.preventDefault();
-                        }}>
                         <Link to={`board/contents/${v.boardno}`} >
                             {v.boardtitle} [{v.replycount}]
                         </Link>
-                        </a>
                 </td>
                 <td>{v.boardauthor}</td>
                 <td>{v.boardview}</td>
@@ -201,11 +198,11 @@ class Board extends Component<any> {
             return (
                 <React.Fragment>
                     <h1>기본 게시판 구현</h1>
-                    <input name="filterKeyTitle" onChange={this.onChange} value={this.state.filterKeyTitle} placeholder="제목 검색" />
+                    <input name="filterKeyTitle" className="form-control" style={{ display: 'inline', width: '180px' }} onChange={this.onChange} value={this.state.filterKeyTitle} placeholder="제목 검색" />
                     &nbsp;
-                    <input name="filterKeyAuthor" onChange={this.onChange} value={this.state.filterKeyAuthor} placeholder="작성자 검색" />
+                    <input name="filterKeyAuthor" className="form-control" style={{ display: 'inline', width: '180px' }}  onChange={this.onChange} value={this.state.filterKeyAuthor} placeholder="작성자 검색" />
                     <Table style={{ marginTop: "10px" }}>
-                        <thead>
+                        <thead className="thead-dark">
                             <tr>
                                 <th>번호</th>
                                 <th>제목</th>
@@ -224,8 +221,8 @@ class Board extends Component<any> {
                         //    : <Link to='/login'><button type="button" onClick={this.handleWriteToggle}>작성</button></Link>
 
                         this.state.isLogin
-                            ? <Link to='board/write'><button type="button" onClick={this.handleWriteToggle}>작성</button></Link>
-                            : <Link to='/login'><button type="button" onClick={this.moveLoginPage}>작성</button></Link>
+                            ? <Link to='board/write'><button type="button" className="btn btn-sm btn-primary" onClick={this.handleWriteToggle}>작성</button></Link>
+                            : <Link to='/login'><button type="button" className="btn btn-sm btn-primary" onClick={this.moveLoginPage}>작성</button></Link>
                     }
                 </React.Fragment>
             );
