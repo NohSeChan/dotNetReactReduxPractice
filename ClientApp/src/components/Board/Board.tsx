@@ -9,6 +9,8 @@ import BoardContents from './BoardContents';
 import BoardWrite from './BoardWrite';
 import 'bootstrap';
 
+import NavMenu  from '../NavMenu';
+
 //type BoardProps =
 //    CounterStore.CounterState &
 //    typeof CounterStore.actionCreators &
@@ -104,6 +106,9 @@ class Board extends Component<any> {
 
 
     moveLoginPage = () => {
+        document.getElementById('boardLink')!.className = "nav-link";
+        document.getElementById('loginLink')!.className = "nav-link active";
+
         alert('로그인을 해주세요');
     }
 

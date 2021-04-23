@@ -33,7 +33,9 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean, 
             boardToggle: false,
             loginToggle: false,
             registToggle: false,
-        })
+        });
+        document.getElementById("loginLink")!.classList.remove("active");
+        document.getElementById("registLink")!.classList.remove("active");
     }
 
     handleToggleHomeButton = () => {
@@ -43,15 +45,15 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean, 
         });
     }
 
-    handleToggleBoardButton = () => {
-        this.resetToggleButton();
+    handleToggleBoardButton = async () => {
+        await this.resetToggleButton();
         this.setState({
             boardToggle: true
         });
     }
 
-    handleToggleLoginButton = () => {
-        this.resetToggleButton();
+    handleToggleLoginButton = async () => {
+        await this.resetToggleButton();
         this.setState({
             loginToggle: true
         });
@@ -83,13 +85,13 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean, 
                                 {/*    <NavLink tag={Link} className="text-dark" to="/fetch-data">날씨</NavLink>*/}
                                 {/*</NavItem>*/}
                                 <NavItem>
-                                    <NavLink tag={Link} onClick={this.handleToggleBoardButton} className={this.state.boardToggle ? "nav-link active" : "nav-link"} to="/board">게시판</NavLink>
+                                    <NavLink id="boardLink" tag={Link} onClick={this.handleToggleBoardButton} className={this.state.boardToggle ? "nav-link active" : "nav-link"} to="/board">게시판</NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    {this.value && this.value[2] ? null : <NavLink tag={Link} onClick={this.handleToggleRegistButton} className={this.state.registToggle ? "nav-link active" : "nav-link"} to="/register">회원가입</NavLink>}
+                                    {this.value && this.value[2] ? null : <NavLink id="registLink" tag={Link} onClick={this.handleToggleRegistButton} className={this.state.registToggle ? "nav-link active" : "nav-link"} to="/register">회원가입</NavLink>}
                                 </NavItem>
                                 <NavItem>
-                                    {this.value && this.value[2] ? <NavLink tag={Link} className="nav-link" onClick={this.handleLogout} to="/">로그아웃</NavLink> : <NavLink tag={Link} onClick={this.handleToggleLoginButton} className={this.state.loginToggle ? "nav-link active" : "nav-link"} to="/login">로그인</NavLink>}
+                                    {this.value && this.value[2] ? <NavLink tag={Link} className="nav-link" onClick={this.handleLogout} to="/">로그아웃</NavLink> : <NavLink tag={Link} id="loginLink" onClick={this.handleToggleLoginButton} className={this.state.loginToggle ? "nav-link active" : "nav-link"} to="/login">로그인</NavLink>}
                                 </NavItem>
                             </ul>
                         </Collapse>

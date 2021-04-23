@@ -50,7 +50,11 @@ class Login extends React.PureComponent<LoginProps> {
             })
     }
 
-
+    handleMoveRegist = () => {
+        document.getElementById('registLink')!.className = "nav-link active";
+        document.getElementById('loginLink')!.className = "nav-link";
+    }
+    
     public render() {
         return (
             <React.Fragment>
@@ -84,7 +88,7 @@ class Login extends React.PureComponent<LoginProps> {
                         로그인
                     </button>
                     &nbsp;
-                    <Link to='/register'><button className="btn btn-sm btn-primary" type="button">회원가입</button></Link>
+                    <Link to='/register'><button className="btn btn-sm btn-primary" type="button" onClick={this.handleMoveRegist}>회원가입</button></Link>
                 </form>
             </React.Fragment>
 
