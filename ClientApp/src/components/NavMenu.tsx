@@ -34,8 +34,8 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean, 
             loginToggle: false,
             registToggle: false,
         });
-        document.getElementById("loginLink")!.classList.remove("active");
-        document.getElementById("registLink")!.classList.remove("active");
+        document.getElementById("loginLink") && document.getElementById("loginLink")!.classList.remove("active");
+        document.getElementById("registLink") && document.getElementById("registLink")!.classList.remove("active");
     }
 
     handleToggleHomeButton = () => {

@@ -20,7 +20,7 @@ interface Props {
     moveList: () => void;
     updateTransform: () => void;
     deleteComplete: (boardNo: number) => void;
-    history: History;
+    history?: History;
 }
 
 class BoardContents extends Component<Props> {
@@ -59,8 +59,8 @@ class BoardContents extends Component<Props> {
     }
 
     handleMoveList = () => {
-        //this.props.moveList();
-        this.props.history.push('/board');
+        this.props.moveList();
+        //this.props.history.push('/board');
     }
 
     handleUpdate = () => {
@@ -150,29 +150,19 @@ class BoardContents extends Component<Props> {
 
     render() {
         return (
-            <div>
-                <h1>기본 게시판 구현</h1>
-                <Table>
+            <div> 
+                <h2 style={{ display: 'inline' }}>{this.props.boardTitle} - [by.{this.props.boardAuthor}]</h2><button className="btn btn-sm" style={{ float: 'right', fontSize: '20px' }} onClick={this.handleMoveList} >[X]</button>
+                <Table style={{ width: "1000px", marginTop: '15px' }}>
                     <thead> 
                         <tr>
-                            <th>글번호</th>
-                            <td colSpan={3}>{this.props.boardNo}</td>
-                        </tr>
-                        <tr>
-                            <th>제목</th>
-                            <td>{this.props.boardTitle}</td>
                             <th>작성일</th>
                             <td>{this.props.boardCreateDateTime.substr(0, 10)}</td>
-                        </tr>
-                        <tr>
-                            <th>글쓴이</th>
-                            <td>{this.props.boardAuthor}</td>
                             <th>조회수</th>
                             <td>{this.props.boardView}</td>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style={{ height: "600px"}}>
+                        <tr style={{ height: "450px"}}>
                             <th>내용</th>
                             <td colSpan={3}>
                                 <div dangerouslySetInnerHTML={{ __html: this.props.boardContents  }} />
@@ -194,8 +184,8 @@ class BoardContents extends Component<Props> {
                         <tr>
                             <th>댓글작성</th>
                             <td colSpan={3}>
-                                <input name="replyInput" value={this.state.replyInput} onChange={this.onChange} style={{ width: "930px" }} placeholder="댓글작성" maxLength={50} onKeyPress={this.handleKeyPress} /> &nbsp;
-                                <button className="btn btn-sm btn-secondary" onClick={this.handleSubmit}>등록</button>
+                                <input name="replyInput" value={this.state.replyInput} onChange={this.onChange} style={{ display: 'td', width: "820px" }} placeholder="댓글작성" maxLength={35} onKeyPress={this.handleKeyPress} /> &nbsp;
+                                <button type="button" className="btn btn-sm btn-secondary" onClick={this.handleSubmit}>등록</button>
                             </td>
                         </tr>
                     </tfoot>

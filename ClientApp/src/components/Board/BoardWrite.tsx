@@ -32,7 +32,7 @@ interface Props {
     boardDetail: BoardDetailType;
     status: string;
     updateComplete: (boardNo: number) => void;
-    history: History;
+    history?: History;
 }
 
 interface BoardDetailType {
@@ -61,6 +61,7 @@ class BoardWrite extends Component<Props, State> {
 
         $('#summernote').summernote({
             height: 300,                 // 에디터 높이
+            width: '100%',
             lang:'ko-KR',
             focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
             toolbar: [
@@ -132,7 +133,6 @@ class BoardWrite extends Component<Props, State> {
             alert('게시글 제목과 내용을 입력해주세요');
             return;
         }
-
         if (this.props.status === 'write') {
             fetch(`WriteBoard`, {
                 method: 'post',
@@ -149,8 +149,7 @@ class BoardWrite extends Component<Props, State> {
                 .then(res => res.json())
                 .then(data => {
                     if (data.msg === 'OK') {
-                        //this.props.writeComplete();
-                        this.props.history.push('/board');
+                        this.props.writeComplete();
                     } else if (data.msg === 'FAIL') {
                         alert(data.exceptionMsg);
                     }
@@ -189,9 +188,9 @@ class BoardWrite extends Component<Props, State> {
     public render() {
         return (
             <React.Fragment>
-                <h1>기본 게시판 구현</h1>
+                <h1>{ this.props.status === 'write' ? '게시글 작성하기' : '게시글 수정하기' }</h1>
                 <br />
-                <Table style={{border: "solid 1px"}}>
+                <Table style={{ border: "solid 1px", width: "1000px",}}>
                     <colgroup>
                         <col style={{ "width":"90px" }} />
                         <col style={{ "width":"auto" }} />
@@ -202,7 +201,7 @@ class BoardWrite extends Component<Props, State> {
                             <td>
                                 <input
                                     type="text"
-                                    style={{ width: "992px" }}
+                                    style={{ width: "100%" }}
                                     name="boardTitle"
                                     value={this.state.boardTitle}
                                     onChange={this.onChange}
@@ -222,9 +221,11 @@ class BoardWrite extends Component<Props, State> {
                         </tr>
                     </tbody>
                 </Table>
-                <button className="btn btn-sm btn-primary" onClick={this.handleSubmit}>작성완료</button>
-                &nbsp;&nbsp;
-                <Link to='/board'><button className="btn btn-sm btn-secondary" onClick={this.handleMoveList}>취소</button></Link>
+                <div className="modal-footer">
+                    <button className="btn btn-primary" style={{ width: '100px' }} onClick={this.handleSubmit}>{ this.props.status === 'write' ? '작성완료' : '수정완료' }</button>
+                    <button className="btn btn-secondary" style={{ width: '80px' }} onClick={this.handleMoveList}>취소</button>
+                </div>
+                
             </React.Fragment>
         );
     }

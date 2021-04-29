@@ -8,6 +8,7 @@ import { Table } from 'reactstrap';
 import BoardContents from './BoardContents';
 import BoardWrite from './BoardWrite';
 import 'bootstrap';
+import $ from "jquery";
 
 import NavMenu  from '../NavMenu';
 
@@ -62,14 +63,7 @@ class Board extends Component<any> {
             });
         }
 
-        if (document.location.pathname === '/board/write') {
-            this.handleWriteToggle();
-        } else if (document.location.pathname.includes('/board/contents')) {
-            var boardNo = document.location.pathname.split('/')[3];
-            this.handleReadContents(Number(boardNo));
-        } else {
-            this.getBoardList();
-        }
+        this.getBoardList();
     }
 
     //shouldComponentUpdate(nextProps: any, nextState: any) {
@@ -112,21 +106,8 @@ class Board extends Component<any> {
         alert('로그인을 해주세요');
     }
 
-    //handleWriteComplete = (maxBoardNo: number, boardTitle: string, boardAuthor: string) => {
-    //    let newBoard = {
-    //        boardno: maxBoardNo,
-    //        boardtitle: boardTitle,
-    //        boardauthor: boardAuthor,
-    //        boardview: 0
-    //    }
-
-    //    this.setState({
-    //        status: 'read',
-    //        boardList: [newBoard, ...this.state.boardList]
-    //    });
-    //}
-
     handleWriteComplete = () => {
+        $('#modalBox').modal('hide');
         this.setState({
             status: 'read',
         });
@@ -134,8 +115,8 @@ class Board extends Component<any> {
     }
 
 
-    handleReadContents = (boardno: number) => {
-        fetch(`BoardDetail?boardNo=${boardno}`)
+    handleReadContents = async (boardno: number) => {
+        await fetch(`BoardDetail?boardNo=${boardno}`)
             .then(res => res.json())
             .then(data => {
                 if (data.msg === 'OK') {
@@ -155,9 +136,13 @@ class Board extends Component<any> {
                     alert(data.exceptionMsg);
                 }
             });
+
+        $('#modalBox').modal('show');
     }
 
     handleMoveList = () => {
+        $('#modalBox').modal('hide');
+
         this.setState({
             status: 'read'
         });
@@ -184,6 +169,11 @@ class Board extends Component<any> {
         })
     }
 
+    handleOpenWriteModal = async () => {
+        await this.handleWriteToggle();
+        $('#modalBox').modal('show');
+    }
+
     public render() {
         const filterList = this.state.boardList.filter(v => v.boardtitle.includes(this.state.filterKeyTitle) && v.boardauthor.includes(this.state.filterKeyAuthor));
 
@@ -191,9 +181,9 @@ class Board extends Component<any> {
             <tr key={v.boardno}>
                 <td>{v.boardno}</td>
                 <td>
-                        <Link to={`board/contents/${v.boardno}`} >
-                            {v.boardtitle} [{v.replycount}]
-                        </Link>
+                    <a href="#" onClick={(e) => { e.preventDefault(); this.handleReadContents(v.boardno); }}>
+                         {v.boardtitle} [{v.replycount}]
+                    </a>
                 </td>
                 <td>{v.boardauthor}</td>
                 <td>{v.boardview}</td>
@@ -221,45 +211,53 @@ class Board extends Component<any> {
                     </Table>
                     <br />
                     {
-                        //this.state.isLogin
-                        //    ? <button type="button" onClick={this.handleWriteToggle}>작성</button>
-                        //    : <Link to='/login'><button type="button" onClick={this.handleWriteToggle}>작성</button></Link>
-
                         this.state.isLogin
-                            ? <Link to='board/write'><button type="button" className="btn btn-sm btn-primary" onClick={this.handleWriteToggle}>작성</button></Link>
+                            ? <button type="button" className="btn btn-sm btn-primary" onClick={this.handleOpenWriteModal}>작성</button>
                             : <Link to='/login'><button type="button" className="btn btn-sm btn-primary" onClick={this.moveLoginPage}>작성</button></Link>
                     }
+                    
                 </React.Fragment>
             );
         } else if (this.state.status === 'write' || this.state.status === 'update') {
             return (
                 <React.Fragment>
-                    <BoardWrite
-                        writeComplete={this.handleWriteComplete}
-                        moveList={this.handleMoveList}
-                        boardDetail={this.state.boardDetail}
-                        status={this.state.status}
-                        updateComplete={this.handleReadContents}
-                        history={this.props.history}
-                    />
+                    <div id="modalBox" className="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+                        <div className="modal-dialog" role="document" style={{ display: 'table', width: 'auto', justifyContent: 'center' }} >
+                            <div className="modal-content">
+                                <BoardWrite
+                                    writeComplete={this.handleWriteComplete}
+                                    moveList={this.handleMoveList}
+                                    boardDetail={this.state.boardDetail}
+                                    status={this.state.status}
+                                    updateComplete={this.handleReadContents}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </React.Fragment>
             );
         } else if (this.state.status === 'readDetail') {
             return (
                 <React.Fragment>
-                    <BoardContents
-                        boardNo={this.state.boardDetail.boardNo}
-                        boardTitle={this.state.boardDetail.boardTitle}
-                        boardAuthor={this.state.boardDetail.boardAuthor}
-                        boardView={this.state.boardDetail.boardView}
-                        boardContents={this.state.boardDetail.boardContents}
-                        boardCreateDateTime={this.state.boardDetail.boardCreateDateTime}
-                        boardUserId={this.state.boardDetail.boardUserId}
-                        moveList={this.handleMoveList}
-                        updateTransform={this.handleUpdateTransform}
-                        deleteComplete={this.handleDeleteComplete}
-                        history={this.props.history}
-                    />
+                    <div id="modalBox" className="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+                        <div className="modal-dialog" role="document" style={{ display: 'table', width: 'auto', justifyContent: 'center'}}  >
+                            <div className="modal-content">
+                                <BoardContents
+                                    boardNo={this.state.boardDetail.boardNo}
+                                    boardTitle={this.state.boardDetail.boardTitle}
+                                    boardAuthor={this.state.boardDetail.boardAuthor}
+                                    boardView={this.state.boardDetail.boardView}
+                                    boardContents={this.state.boardDetail.boardContents}
+                                    boardCreateDateTime={this.state.boardDetail.boardCreateDateTime}
+                                    boardUserId={this.state.boardDetail.boardUserId}
+                                    moveList={this.handleMoveList}
+                                    updateTransform={this.handleUpdateTransform}
+                                    deleteComplete={this.handleDeleteComplete}
+                                    //history={this.props.history}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </React.Fragment>
             );
         }

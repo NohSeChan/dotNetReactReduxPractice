@@ -19,7 +19,5 @@ export default () => (
         <Route path='/login' component={Login} />
         <Route path='/register' component={Register} />
         <Route exact path='/board' component={Board} />
-        <Route exact path='/board/write' component={Board} />
-        <Route exact path='/board/contents/:id' component={Board} />
     </Layout>
 );
