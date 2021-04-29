@@ -109,21 +109,21 @@ class BoardReply extends Component<Props> {
             v1.replyId === v1.p_REPLYID
                 // 답글이면
                 ? (
-                    <div style={{ width: '700px' }} key={v1.replyId}>
+                    <div key={v1.replyId}>
                         <hr style={{ color: '#000000', backgroundColor: '#000000', borderColor: '#000000' }} />
                         <li style={{ listStyle: 'none' }}>
                             <span style={{ color: "gray" }}>by.{v1.boardreplyusername} : {v1.replyContents} </span> <a href="#" onClick={(e) => this.handleReplyModeTransfer(e, v1.replyId)}> - [답글달기]</a><span style={{ float: 'right', color: "gray" }}>{v1.replyCreateTime.substr(0, 10)}</span>
                         </li>
-                        {inputReplyIndex === v1.replyId ? <span style={{  display: 'block', margin: '4px'}}><input type="type" style={{ width: "75%" }} name="replyReplyInput" onChange={this.onChange} value={this.state.replyReplyInput} placeholder="답글작성" onKeyPress={this.handleKeyPress} ref={this.replyInputRef1} maxLength={20} />&nbsp;&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleSubmitReplyReply}>등록</button></span> : null}
+                        {inputReplyIndex === v1.replyId ? <span style={{  display: 'block', margin: '4px'}}><input type="type" style={{ width: "75%" }} name="replyReplyInput" onChange={this.onChange} value={this.state.replyReplyInput} placeholder="답글작성" onKeyPress={this.handleKeyPress} ref={this.replyInputRef1} maxLength={15} />&nbsp;&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleSubmitReplyReply}>등록</button></span> : null}
                     </div>
                 )
                 // 답글의 답글이면
                 : (
-                    <div style={{ width: '700px' }}  key={v1.replyId}>
+                    <div key={v1.replyId}>
                         <li style={{ listStyle: 'none' }}>
                             &nbsp;&nbsp;▶<span style={{ color: "gray" }}>by.{v1.boardreplyusername} :  {v1.replyContents}</span> <span style={{ float: 'right', color: "gray" }}>{v1.replyCreateTime.substr(0, 10)}</span>
                         </li>
-                        {inputReplyIndex === v1.replyId ? <span style={{ display: 'block', margin: '4px' }}><input type="type" style={{ width: "75%" }} name="replyReplyInput" onChange={this.onChange} value={this.state.replyReplyInput} placeholder="답글작성" onKeyPress={this.handleKeyPress} ref={this.replyInputRef2} maxLength={20} />&nbsp;&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleSubmitReplyReply}>등록</button></span> : null}    
+                        {inputReplyIndex === v1.replyId ? <span style={{ display: 'block', margin: '4px' }}><input type="type" style={{ width: "75%" }} name="replyReplyInput" onChange={this.onChange} value={this.state.replyReplyInput} placeholder="답글작성" onKeyPress={this.handleKeyPress} ref={this.replyInputRef2} maxLength={15} />&nbsp;&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleSubmitReplyReply}>등록</button></span> : null}    
                     </div>
                 )
         ));

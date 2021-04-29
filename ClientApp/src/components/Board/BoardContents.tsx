@@ -153,7 +153,7 @@ class BoardContents extends Component<Props> {
             <div id="tableScrollX"> 
 {/*            <div style={{ width: "450px", float: 'left', overflowX: 'auto'}}> */}
                 <h2 style={{ display: 'inline' }}>{this.props.boardTitle} - [by.{this.props.boardAuthor}]</h2><button className="btn btn-sm" style={{ float: 'right', fontSize: '20px' }} onClick={this.handleMoveList} >[X]</button>
-                <Table style={{ marginTop: '15px' }}>
+                <Table style={{ marginTop: '15px' }} >
                     <colgroup>
                         <col style={{ "width": "199px" }} />
                         <col style={{ "width": "auto" }} />
@@ -170,7 +170,7 @@ class BoardContents extends Component<Props> {
                     </thead>
                     <tbody>
                         <tr>
-                            <th>내용</th>
+                            <th style={{ verticalAlign: 'middle' }}>내용</th>
                             <td colSpan={3} style={{ height: "450px" }}>
                                 <div dangerouslySetInnerHTML={{ __html: this.props.boardContents }} />
                             </td>
@@ -192,7 +192,7 @@ class BoardContents extends Component<Props> {
                             <th>댓글작성</th>
                             <td colSpan={3}>
                                 <span style={{ display: 'block' }}>
-                                    <input name="replyInput" style={{ width: '67%' }} value={this.state.replyInput} onChange={this.onChange} placeholder="댓글작성" maxLength={35} onKeyPress={this.handleKeyPress} /> &nbsp;
+                                    <input name="replyInput" style={{ width: '67%' }} value={this.state.replyInput} onChange={this.onChange} placeholder="댓글작성" maxLength={15} onKeyPress={this.handleKeyPress} /> &nbsp;
                                     <button type="button" className="btn btn-sm btn-secondary" onClick={this.handleSubmit}>등록</button>
                                 </span>
                             </td>
