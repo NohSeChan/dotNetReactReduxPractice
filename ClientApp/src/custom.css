@@ -18,3 +18,12 @@ th, td {
     border: 1px solid #dee2e6;
     padding: 10px;
 }
+
+@media (max-width: 991px) {
+    #tableScrollX {
+        width: 450px; 
+        float: left; 
+        overflow-x: auto;
+    }
+}
+
