@@ -66,6 +66,16 @@ class Board extends Component<any> {
         this.getBoardList();
     }
 
+    componentWillUnmount = () => {
+        if ($('#modalBoxWrite').length === 1) {
+            $('#modalBoxWrite').modal('hide');
+        } 
+
+        if ($('#modalBoxRead').length === 1) {
+            $('#modalBoxRead').modal('hide');
+        } 
+    }
+
     //shouldComponentUpdate(nextProps: any, nextState: any) {
     //    console.log('this.state', this.state);
     //    console.log('nextState', nextState);
@@ -106,16 +116,20 @@ class Board extends Component<any> {
         alert('로그인을 해주세요');
     }
 
-    handleWriteComplete = () => {
-        $('#modalBox').modal('hide');
-        this.setState({
+    handleWriteComplete = async () => {
+        $('#modalBoxWrite').modal('hide');
+        await this.setState({
             status: 'read',
         });
-        this.getBoardList();
+        await this.getBoardList();
     }
 
 
     handleReadContents = async (boardno: number) => {
+        if ($('#modalBoxWrite').length === 1) {
+            await $('#modalBoxWrite').modal('hide');
+        } 
+
         await fetch(`BoardDetail?boardNo=${boardno}`)
             .then(res => res.json())
             .then(data => {
@@ -136,24 +150,26 @@ class Board extends Component<any> {
                     alert(data.exceptionMsg);
                 }
             });
-
-        $('#modalBox').modal('show');
+        $('#modalBoxRead').modal('show');
     }
 
-    handleMoveList = () => {
-        $('#modalBox').modal('hide');
+    handleMoveList = async () => {
+        await $('#modalBoxRead').modal('hide');
+        await $('#modalBoxWrite').modal('hide');
 
-        this.setState({
+        await this.setState({
             status: 'read'
         });
 
         this.getBoardList();
     }
 
-    handleUpdateTransform = () => {
-        this.setState({
+    handleUpdateTransform = async () => {
+        await $('#modalBoxRead').modal('hide');
+        await this.setState({
             status: 'update'
         });
+        $('#modalBoxWrite').modal('show');
     }
 
     handleDeleteComplete = (boardNo: number) => {
@@ -171,7 +187,7 @@ class Board extends Component<any> {
 
     handleOpenWriteModal = async () => {
         await this.handleWriteToggle();
-        $('#modalBox').modal('show');
+        $('#modalBoxWrite').modal('show');
     }
 
     public render() {
@@ -221,8 +237,8 @@ class Board extends Component<any> {
         } else if (this.state.status === 'write' || this.state.status === 'update') {
             return (
                 <React.Fragment>
-                    <div id="modalBox" className="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
-                        <div className="modal-dialog" role="document" style={{ display: 'table', width: 'auto', justifyContent: 'center' }} >
+                    <div id="modalBoxWrite" className="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+                        <div className="modal-dialog modal-lg" role="document" >
                             <div className="modal-content">
                                 <BoardWrite
                                     writeComplete={this.handleWriteComplete}
@@ -239,8 +255,8 @@ class Board extends Component<any> {
         } else if (this.state.status === 'readDetail') {
             return (
                 <React.Fragment>
-                    <div id="modalBox" className="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
-                        <div className="modal-dialog" role="document" style={{ display: 'table', width: 'auto', justifyContent: 'center'}}  >
+                    <div id="modalBoxRead" className="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+                        <div className="modal-dialog modal-lg" role="document" >
                             <div className="modal-content">
                                 <BoardContents
                                     boardNo={this.state.boardDetail.boardNo}

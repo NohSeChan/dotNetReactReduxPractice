@@ -190,7 +190,7 @@ class BoardWrite extends Component<Props, State> {
             <React.Fragment>
                 <h1>{ this.props.status === 'write' ? '게시글 작성하기' : '게시글 수정하기' }</h1>
                 <br />
-                <Table style={{ border: "solid 1px", width: "1000px",}}>
+                <Table style={{ border: "solid 1px", width: "auto"}}>
                     <colgroup>
                         <col style={{ "width":"90px" }} />
                         <col style={{ "width":"auto" }} />

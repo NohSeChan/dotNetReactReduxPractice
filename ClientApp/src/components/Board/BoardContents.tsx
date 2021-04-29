@@ -150,9 +150,16 @@ class BoardContents extends Component<Props> {
 
     render() {
         return (
-            <div> 
+            <div id="tableScrollX"> 
+{/*            <div style={{ width: "450px", float: 'left', overflowX: 'auto'}}> */}
                 <h2 style={{ display: 'inline' }}>{this.props.boardTitle} - [by.{this.props.boardAuthor}]</h2><button className="btn btn-sm" style={{ float: 'right', fontSize: '20px' }} onClick={this.handleMoveList} >[X]</button>
-                <Table style={{ width: "1000px", marginTop: '15px' }}>
+                <Table style={{ marginTop: '15px' }}>
+                    <colgroup>
+                        <col style={{ "width": "199px" }} />
+                        <col style={{ "width": "auto" }} />
+                        <col style={{ "width": "199px" }} />
+                        <col style={{ "width": "200px" }} />
+                    </colgroup>
                     <thead> 
                         <tr>
                             <th>작성일</th>
@@ -162,10 +169,10 @@ class BoardContents extends Component<Props> {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style={{ height: "450px"}}>
+                        <tr>
                             <th>내용</th>
-                            <td colSpan={3}>
-                                <div dangerouslySetInnerHTML={{ __html: this.props.boardContents  }} />
+                            <td colSpan={3} style={{ height: "450px" }}>
+                                <div dangerouslySetInnerHTML={{ __html: this.props.boardContents }} />
                             </td>
                         </tr>
                     </tbody>
@@ -184,13 +191,15 @@ class BoardContents extends Component<Props> {
                         <tr>
                             <th>댓글작성</th>
                             <td colSpan={3}>
-                                <input name="replyInput" value={this.state.replyInput} onChange={this.onChange} style={{ display: 'td', width: "820px" }} placeholder="댓글작성" maxLength={35} onKeyPress={this.handleKeyPress} /> &nbsp;
-                                <button type="button" className="btn btn-sm btn-secondary" onClick={this.handleSubmit}>등록</button>
+                                <span style={{ display: 'block' }}>
+                                    <input name="replyInput" style={{ width: '67%' }} value={this.state.replyInput} onChange={this.onChange} placeholder="댓글작성" maxLength={35} onKeyPress={this.handleKeyPress} /> &nbsp;
+                                    <button type="button" className="btn btn-sm btn-secondary" onClick={this.handleSubmit}>등록</button>
+                                </span>
                             </td>
                         </tr>
                     </tfoot>
                 </Table>
-                
+                <br />
                 <button className="btn btn-sm btn-secondary" onClick={this.handleMoveList}>목록</button>
                 {this.state.showUpdateDeleteBtn
                     ? <>&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleUpdate}>수정</button>&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleRemove}>삭제</button></>
