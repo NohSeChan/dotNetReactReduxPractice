@@ -2,13 +2,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../store';
-import * as CounterStore from '../../store/Counter';
+import * as UserStore from '../../store/User';
 import { Link } from 'react-router-dom';
 import * as utils from '../../utils/util';
 
 type LoginProps =
-    CounterStore.CounterState &
-    typeof CounterStore.actionCreators &
+    UserStore.UserState &
+    typeof UserStore.actionCreators &
     RouteComponentProps<{}>;
 
 class Login extends React.PureComponent<LoginProps> {
@@ -18,18 +18,18 @@ class Login extends React.PureComponent<LoginProps> {
     }
 
     handleChange = (e: any) => {
-        this.setState({
-            [e.target.name]: e.target.value
-        });
+        this.props.handleOnChange(e);
     }
 
     handleLogin = (e: any) => {
         e.preventDefault();
+        console.log(this.props.id);
+        console.log(this.props.password);
         fetch('Login', {
             method: 'post',
             body: JSON.stringify({
-                id: this.state.id,
-                password: this.state.password
+                id: this.props.id,
+                password: this.props.password
             }),
             headers: {
                 'Accept': 'application/json; charset=utf-8',
@@ -45,8 +45,6 @@ class Login extends React.PureComponent<LoginProps> {
                 } else if (data.msg === 'FAIL') {
                     alert(data.exceptionMsg);
                 }
-
-                
             })
     }
 
@@ -67,7 +65,7 @@ class Login extends React.PureComponent<LoginProps> {
                             name="id"
                             className="form-control"
                             style={{ display: 'inline', width: '180px' }}
-                            value={this.state.id}
+                            value={this.props.id}
                             onChange={this.handleChange}
                             placeholder="아이디 입력"
                         />
@@ -79,7 +77,7 @@ class Login extends React.PureComponent<LoginProps> {
                             name="password"
                             className="form-control"
                             style={{ display: 'inline', width: '180px' }}
-                            value={this.state.password}
+                            value={this.props.password}
                             onChange={this.handleChange}
                             placeholder="패스워드 입력"
                         />
@@ -91,28 +89,11 @@ class Login extends React.PureComponent<LoginProps> {
                     <Link to='/register'><button className="btn btn-sm btn-primary" type="button" onClick={this.handleMoveRegist}>회원가입</button></Link>
                 </form>
             </React.Fragment>
-
-
-            //<React.Fragment>
-            //    <h1>Counter</h1>
-
-            //    <p>This is a simple example of a React component.</p>
-
-            //    <p aria-live="polite">Current count: <strong>{this.props.count}</strong></p>
-
-            //    <button type="button"
-            //        className="btn btn-primary btn-lg"
-            //        onClick={() => { this.props.increment(); }}>
-            //        Increment
-            //    </button>
-            //</React.Fragment>
         );
     }
 };
 
-//export default connect(
-//    (state: ApplicationState) => state.counter,
-//    CounterStore.actionCreators
-//)(Login);
-
-export default Login;
+export default connect(
+    (state: ApplicationState) => state.user,
+    UserStore.actionCreators
+)(Login);
