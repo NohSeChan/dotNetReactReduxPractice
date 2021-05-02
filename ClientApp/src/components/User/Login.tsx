@@ -2,20 +2,20 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../store';
-import * as UserStore from '../../store/User';
+import * as UserLoginStore from '../../store/UserLogin';
 import { Link } from 'react-router-dom';
 import * as utils from '../../utils/util';
 
 type LoginProps =
-    UserStore.UserState &
-    typeof UserStore.actionCreators &
+    UserLoginStore.UserState &
+    typeof UserLoginStore.actionCreators &
     RouteComponentProps<{}>;
 
 class Login extends React.PureComponent<LoginProps> {
-    state = {
-        id: '',
-        password: '',
-    }
+    //state = {
+    //    id: '',
+    //    password: '',
+    //}
 
     handleChange = (e: any) => {
         this.props.handleOnChange(e);
@@ -94,6 +94,6 @@ class Login extends React.PureComponent<LoginProps> {
 };
 
 export default connect(
-    (state: ApplicationState) => state.user,
-    UserStore.actionCreators
+    (state: ApplicationState) => state.userLogin,
+    UserLoginStore.actionCreators
 )(Login);

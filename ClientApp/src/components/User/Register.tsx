@@ -2,107 +2,71 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../store';
-import * as CounterStore from '../../store/Counter';
+import * as UserRegisterStore from '../../store/UserRegister';
 import * as utils from '../../utils/util';
 
 type LoginProps =
-    CounterStore.CounterState &
-    typeof CounterStore.actionCreators &
+    UserRegisterStore.UserState &
+    typeof UserRegisterStore.actionCreators &
     RouteComponentProps<{}>;
 
 class Register extends React.PureComponent<LoginProps> {
-    state = {
-        id: '',
-        userName: '',
-        password: '',
-        password2: '',
-        idFormCheck: false,
-        idFormCheckMsg: '',
-        idCheck: false,
-        idCheckMsg: '',
-        userNameCheck: false,
-        userNameCheckMsg: '',
-        passwordLegnthCheck: false,
-        passwordEqualCheck: false,
-        passwordValidationCheck: false,
-        passwordValdiationCheckMsg: '',
-    }
-
     regExp = /[^a-zA-Z0-9]/;
     regExp2 = /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^\w\s]).*/;
 
     handleChange = (e: any) => {
-        this.setState({
-            [e.target.name]: e.target.value
-        });
+        //this.setState({
+        //    [e.target.name]: e.target.value
+        //});
+
+        this.props.handleOnChange(e);
 
         if (e.target.name === 'id' && e.target.value.match(this.regExp) !== null) {
-            this.setState({
-                idFormCheck: false,
-                idFormCheckMsg: '※ 아이디에는 영문자와 숫자만 입력가능합니다'
-            });
+            this.props.handleFormIdCheck(false, '※ 아이디에는 영문자와 숫자만 입력가능합니다');
         } else if (e.target.name === 'id' && e.target.value.match(this.regExp) === null) {
-            this.setState({
-                idFormCheck: true,
-                idFormCheckMsg: '',
-            });
+            this.props.handleFormIdCheck(true, '');
         } else if (e.target.name === 'password') {
             if (e.target.value.match(this.regExp2) === null) {
-                this.setState({
-                    passwordValidationCheck: false,
-                    passwordValdiationCheckMsg: '※ 비밀번호는 영문자/숫자/특수문자가 조합되어야합니다'
-                });
+                this.props.handlePasswordValidationCheck(false, '※ 비밀번호는 영문자/숫자/특수문자가 조합되어야합니다');
             } else {
-                this.setState({
-                    passwordValidationCheck: true,
-                    passwordValdiationCheckMsg: ''
-                });
+                this.props.handlePasswordValidationCheck(true, '');
             }
-
             if (e.target.value.length < 8) {
-                this.setState({
-                    passwordLegnthCheck: false
-                });
+                this.props.handlePasswordLegnthCheck(false);
             } else {
-                this.setState({
-                    passwordLegnthCheck: true,
-                });
+                this.props.handlePasswordLegnthCheck(true);
             }
-        } else if (e.target.name === 'password2' && this.state.password === e.target.value) {
-            this.setState({
-                passwordEqualCheck: true
-            });
-        } else if (e.target.name === 'password2' && this.state.password !== e.target.value) {
-            this.setState({
-                passwordEqualCheck: false
-            });
+        } else if (e.target.name === 'password2' && this.props.password === e.target.value) {
+            this.props.handlePasswordEqualCheck(true);
+        } else if (e.target.name === 'password2' && this.props.password !== e.target.value) {
+            this.props.handlePasswordEqualCheck(false);
         }
     };
 
     handleRegister = (e: any) => {
         e.preventDefault();
-        if (this.state.id === '') {
+        if (this.props.id === '') {
             alert('아이디를 입력해주세요');
             return;
-        } else if (this.state.userName === '') {
+        } else if (this.props.userName === '') {
             alert('닉네임을 입력해주세요');
             return;
-        } else if (!this.state.idFormCheck) {
-            alert(this.state.idFormCheckMsg);
+        } else if (!this.props.idFormCheck) {
+            alert(this.props.idFormCheckMsg);
             return;
-        } else if (!this.state.idCheck) {
-            alert(this.state.idCheckMsg);
+        } else if (!this.props.idDuplCheck) {
+            alert(this.props.idDuplCheckMsg);
             return;
-        } else if (!this.state.userNameCheck) {
-            alert(this.state.userNameCheckMsg);
+        } else if (!this.props.userNameCheck) {
+            alert(this.props.userNameCheckMsg);
             return;
-        } else if (!this.state.passwordLegnthCheck) {
+        } else if (!this.props.passwordLegnthCheck) {
             alert('비밀번호는 8자 이상 입력해주세요');
             return;
-        } else if (!this.state.passwordValidationCheck) {
-            alert(this.state.passwordValdiationCheckMsg);
+        } else if (!this.props.passwordValidationCheck) {
+            alert(this.props.passwordValdiationCheckMsg);
             return;
-        } else if (!this.state.passwordEqualCheck) {
+        } else if (!this.props.passwordEqualCheck) {
             alert('패스워드를 일치시켜주세요');
             return;
         }
@@ -110,10 +74,10 @@ class Register extends React.PureComponent<LoginProps> {
         fetch(`Register`, {
             method: 'post',
             body: JSON.stringify({
-                id: this.state.id,
-                userName: this.state.userName,
-                password: this.state.password,
-                password2: this.state.password2,
+                id: this.props.id,
+                userName: this.props.userName,
+                password: this.props.password,
+                password2: this.props.password2,
             }),
             headers: {
                 'Accept': 'application/json; charset=utf-8',
@@ -133,29 +97,18 @@ class Register extends React.PureComponent<LoginProps> {
     }
 
     handleReset = (e: any) => {
-        e.preventDefault()
-        this.setState({
-            id: '',
-            userName: '',
-            password: '',
-            password2: '',
-        });
+        e.preventDefault();
+        this.props.handleReset();
     }
 
     handleOnBlurId = () => {
-        fetch(`SelectUserById?id=${this.state.id}`)
+        fetch(`SelectUserById?id=${this.props.id}`)
             .then(res => res.json())
             .then(data => {
                 if (data.msg === 'DUPLICATE') {
-                    this.setState({
-                        idCheck: false,
-                        idCheckMsg: '※ 이미 존재하는 ID입니다'
-                    });
+                    this.props.handleIdDuplCheck(false, '※ 이미 존재하는 ID입니다')
                 } else if (data.msg === 'OK') {
-                    this.setState({
-                        idCheck: true,
-                        idCheckMsg: ''
-                    });
+                    this.props.handleIdDuplCheck(true, '')
                 } else if (data.msg === 'FAIL') {
                     alert(data.exceptionMsg);
                 }
@@ -163,19 +116,13 @@ class Register extends React.PureComponent<LoginProps> {
     }
 
     handleOnBlurUserName = () => {
-        fetch(`SelectUserByUserName?userName=${this.state.userName}`)
+        fetch(`SelectUserByUserName?userName=${this.props.userName}`)
             .then(res => res.json())
             .then(data => {
                 if (data.msg === 'DUPLICATE') {
-                    this.setState({
-                        userNameCheck: false,
-                        userNameCheckMsg: '※ 이미 존재하는 닉네임입니다'
-                    });
+                    this.props.handleUserNameCheck(false, '※ 이미 존재하는 닉네임입니다')
                 } else if (data.msg === 'OK') {
-                    this.setState({
-                        userNameCheck: true,
-                        userNameCheckMsg: ''
-                    });
+                    this.props.handleUserNameCheck(true, '')
                 } else if (data.msg === 'FAIL') {
                     alert(data.exceptionMsg);
                 }
@@ -194,14 +141,14 @@ class Register extends React.PureComponent<LoginProps> {
                             name="id"
                             className="form-control"
                             style={{display:'inline', width: '180px'}}
-                            value={this.state.id}
+                            value={this.props.id}
                             onChange={this.handleChange}
                             placeholder="아이디 입력"
                             onBlur={this.handleOnBlurId}
                         />
-                        &nbsp; {!this.state.idFormCheck ? <label style={{ color: 'red' }}>{this.state.idFormCheckMsg}</label> : null}
-                        {!this.state.idCheck ? <label style={{ color: 'red' }}>{this.state.idCheckMsg}</label> : null}
-                        {this.state.idFormCheck && this.state.idCheck && this.state.id.length !== 0 ? <label style={{ color: 'green' }}>적절한 ID입니다</label>  : null}
+                        &nbsp; {!this.props.idFormCheck ? <label style={{ color: 'red' }}>{this.props.idFormCheckMsg}</label> : null}
+                        {!this.props.idDuplCheck ? <label style={{ color: 'red' }}>{this.props.idDuplCheckMsg}</label> : null}
+                        {this.props.idFormCheck && this.props.idDuplCheck && this.props.id.length !== 0 ? <label style={{ color: 'green' }}>적절한 ID입니다</label>  : null}
                     </div>
                     <div>
                         <label>닉네임 : &nbsp;&nbsp;</label>
@@ -210,12 +157,12 @@ class Register extends React.PureComponent<LoginProps> {
                             name="userName"
                             className="form-control"
                             style={{ display: 'inline', width: '180px' }}
-                            value={this.state.userName}
+                            value={this.props.userName}
                             onChange={this.handleChange}
                             placeholder="닉네임 입력"
                             onBlur={this.handleOnBlurUserName}
                         />
-                        &nbsp; {!this.state.userNameCheck || this.state.userName.length === 0 ? <label style={{ color: 'red' }}>{this.state.userNameCheckMsg}</label> : <label style={{ color: 'green' }}>적절한 닉네임입니다</label>}
+                        &nbsp; {!this.props.userNameCheck || this.props.userName.length === 0 ? <label style={{ color: 'red' }}>{this.props.userNameCheckMsg}</label> : <label style={{ color: 'green' }}>적절한 닉네임입니다</label>}
                     </div>
                     <div>
                         <label>패스워드 :&nbsp;</label>
@@ -224,13 +171,13 @@ class Register extends React.PureComponent<LoginProps> {
                             name="password"
                             className="form-control"
                             style={{ display: 'inline', width: '180px' }}
-                            value={this.state.password}
+                            value={this.props.password}
                             onChange={this.handleChange}
                             placeholder="패스워드 입력"
                         />
-                        &nbsp; {!this.state.passwordLegnthCheck && this.state.password.length > 0 ? <label style={{ color: 'red' }}>※ 패스워드는 8자 이상 입력해주세요</label> : null}
-                        &nbsp; {!this.state.passwordValidationCheck && this.state.password.length > 0 ? <label style={{ color: 'red' }}>{this.state.passwordValdiationCheckMsg}</label> : null}
-                        {this.state.passwordLegnthCheck && this.state.passwordValidationCheck ? <label style={{ color: 'green' }}>적절한 비밀번호입니다</label> : null}
+                        &nbsp; {!this.props.passwordLegnthCheck && this.props.password.length > 0 ? <label style={{ color: 'red' }}>※ 패스워드는 8자 이상 입력해주세요</label> : null}
+                        &nbsp; {!this.props.passwordValidationCheck && this.props.password.length > 0 ? <label style={{ color: 'red' }}>{this.props.passwordValdiationCheckMsg}</label> : null}
+                        {this.props.passwordLegnthCheck && this.props.passwordValidationCheck ? <label style={{ color: 'green' }}>적절한 비밀번호입니다</label> : null}
                     </div>
                     <div>
                         <label>패스워드 확인 : &nbsp;</label>
@@ -239,12 +186,12 @@ class Register extends React.PureComponent<LoginProps> {
                             name="password2"
                             className="form-control"
                             style={{ display: 'inline', width: '180px' }}
-                            value={this.state.password2}
+                            value={this.props.password2}
                             onChange={this.handleChange}
                             placeholder="패스워드 확인"
                         />
-                        &nbsp; {!this.state.passwordEqualCheck && this.state.password2.length > 0 ? <label style={{ color: 'red' }}>※ 패스워드를 일치시켜주세요</label> : null}
-                        {this.state.passwordEqualCheck ? <label style={{ color: 'green' }}>비밀번호가 일치합니다</label> : null}
+                        &nbsp; {!this.props.passwordEqualCheck && this.props.password2.length > 0 ? <label style={{ color: 'red' }}>※ 패스워드를 일치시켜주세요</label> : null}
+                        {this.props.passwordEqualCheck ? <label style={{ color: 'green' }}>비밀번호가 일치합니다</label> : null}
                     </div>
                     <button className="btn btn-sm btn-primary" onClick={this.handleRegister}>
                         회원가입
@@ -255,28 +202,13 @@ class Register extends React.PureComponent<LoginProps> {
                     </button>
                 </form>
             </React.Fragment>
-
-
-            //<React.Fragment>
-            //    <h1>Counter</h1>
-
-            //    <p>This is a simple example of a React component.</p>
-
-            //    <p aria-live="polite">Current count: <strong>{this.props.count}</strong></p>
-
-            //    <button type="button"
-            //        className="btn btn-primary btn-lg"
-            //        onClick={() => { this.props.increment(); }}>
-            //        Increment
-            //    </button>
-            //</React.Fragment>
         );
     }
 };
 
-//export default connect(
-//    (state: ApplicationState) => state.counter,
-//    CounterStore.actionCreators
-//)(Login);
+export default connect(
+    (state: ApplicationState) => state.userRegister,
+    UserRegisterStore.actionCreators
+)(Register);
 
-export default Register;
+

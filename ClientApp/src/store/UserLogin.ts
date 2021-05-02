@@ -6,7 +6,7 @@ export interface UserState {
 }
 
 export interface HandleOnChangeAction {
-    type: 'user/ONCHANGNE',
+    type: 'userLogin/ONCHANGNE',
     meta: {
         e: any
     }
@@ -15,7 +15,7 @@ type KnownAction = HandleOnChangeAction;
 
 export const actionCreators = {
     handleOnChange: (e: any) => ({
-        type: 'user/ONCHANGNE',
+        type: 'userLogin/ONCHANGNE',
         meta: {
             e
         }
@@ -26,13 +26,13 @@ export const reducer: Reducer<UserState> = (state: UserState | undefined, incomi
     if (state === undefined) {
         return {
             id: '',
-            password: ''
+            password: '',
         };
     }
 
     const action = incomingAction as KnownAction;
     switch (action.type) {
-        case 'user/ONCHANGNE':
+        case 'userLogin/ONCHANGNE':
             return {
                 ...state,
                 [action.meta.e.currentTarget.name]: action.meta.e.currentTarget.value
