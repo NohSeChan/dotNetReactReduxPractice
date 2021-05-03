@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../store';
-import * as UserRegisterStore from '../../store/UserRegister';
+import * as UserRegisterStore from '../../store/User/UserRegister';
 import * as utils from '../../utils/util';
 
 type LoginProps =
@@ -15,10 +15,6 @@ class Register extends React.PureComponent<LoginProps> {
     regExp2 = /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^\w\s]).*/;
 
     handleChange = (e: any) => {
-        //this.setState({
-        //    [e.target.name]: e.target.value
-        //});
-
         this.props.handleOnChange(e);
 
         if (e.target.name === 'id' && e.target.value.match(this.regExp) !== null) {
@@ -128,6 +124,11 @@ class Register extends React.PureComponent<LoginProps> {
                 }
             });
     }
+
+    componentWillUnmount() {
+        this.props.handleReset();
+    }
+
 
     public render() {
         return (

@@ -185,6 +185,16 @@ export const reducer: Reducer<UserState> = (state: UserState | undefined, incomi
                 userName: '',
                 password: '',
                 password2: '',
+                idFormCheck: false,
+                idFormCheckMsg: '',
+                idDuplCheck: false,
+                idDuplCheckMsg: '',
+                userNameCheck: false,
+                userNameCheckMsg: '',
+                passwordLegnthCheck: false,
+                passwordEqualCheck: false,
+                passwordValidationCheck: false,
+                passwordValdiationCheckMsg: '',
             }
         case 'userRegister/IdDuplCheck':
             return {

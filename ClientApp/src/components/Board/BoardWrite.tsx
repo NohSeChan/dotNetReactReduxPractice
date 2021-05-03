@@ -12,6 +12,7 @@ import 'summernote/dist/summernote.css';
 import 'bootstrap';
 import { Table } from 'reactstrap';
 import { History } from 'history';
+import { BoardDetailState } from '../../store/Board/Board';
 
 //type BoardProps =
 //    CounterStore.CounterState &
@@ -29,27 +30,27 @@ interface Props {
 /*writeComplete: (maxBoardNo: number, boardTitle: string, boardAuthor: string) => void;*/
     writeComplete: () => void;
     moveList: () => void;
-    boardDetail: BoardDetailType;
+    boardDetail: BoardDetailState;
     status: string;
     updateComplete: (boardNo: number) => void;
     history?: History;
 }
 
-interface BoardDetailType {
-    boardNo: number,
-    boardTitle: string,
-    boardAuthor: string,
-    boardView: number,
-    boardContents: string,
-    boardCreateDateTime: string,
-    boardUserId: string,
-}
+//interface BoardDetailType {
+//    boardno: number,
+//    boardtitle: string,
+//    boardauthor: string,
+//    boardview: number,
+//    boardcontents: string,
+//    creatE_DATETIME: string,
+//    boarduserid: string,
+//}
 
 class BoardWrite extends Component<Props, State> {
     state = {
-        boardTitle: this.props.boardDetail.boardTitle ||'',
-        boardAuthor: this.props.boardDetail.boardAuthor || '',
-        boardContents: this.props.boardDetail.boardContents || '',
+        boardTitle: this.props.boardDetail.boardtitle ||'',
+        boardAuthor: this.props.boardDetail.boardauthor || '',
+        boardContents: this.props.boardDetail.boardcontents || '',
     }
 
     componentDidMount() {
@@ -158,7 +159,7 @@ class BoardWrite extends Component<Props, State> {
             fetch(`UpdateBoard`, {
                 method: 'post',
                 body: JSON.stringify({
-                    BOARDNO: this.props.boardDetail.boardNo,
+                    BOARDNO: this.props.boardDetail.boardno,
                     BOARDTITLE: this.state.boardTitle,
                     BOARDAUTHOR: this.state.boardAuthor,
                     BOARDCONTENTS: $('#summernote').summernote('code')
@@ -171,7 +172,7 @@ class BoardWrite extends Component<Props, State> {
                 .then(res => res.json())
                 .then(data => {
                     if (data.msg === 'OK') {
-                        this.props.updateComplete(this.props.boardDetail.boardNo);
+                        this.props.updateComplete(this.props.boardDetail.boardno!);
                     } else if (data.msg === 'FAIL') {
                         alert(data.exceptionMsg);
                     }

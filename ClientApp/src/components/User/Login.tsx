@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../store';
-import * as UserLoginStore from '../../store/UserLogin';
+import * as UserLoginStore from '../../store/User/UserLogin';
 import { Link } from 'react-router-dom';
 import * as utils from '../../utils/util';
 
