@@ -54,7 +54,7 @@ export interface HandleUpdateToggleAction {
 export interface HandleOnChangeAction {
     type: 'board/ONCHANGNE',
     meta: {
-        e: any
+        e: React.FormEvent<HTMLInputElement>
     }
 }
 type KnownAction = HandleIsLoginAction | HandleBoardListAction | HandleWriteToggleAction | HandleReadToggleAction | HandleReadDetailToggleAction | HandleUpdateToggleAction | HandleOnChangeAction;

@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../store';
-import * as CounterStore from '../../store/Counter';
-import { Link } from 'react-router-dom';
+import * as BoardContentsStore from '../../store/Board/BoardContents';
 import { Table } from 'reactstrap';
 import BoardReply from './BoardReply';
-import { History } from 'history';
 
 
 interface Props {
@@ -19,48 +17,49 @@ interface Props {
     boardUserId: string;
     moveList: () => void;
     updateTransform: () => void;
-    deleteComplete: (boardNo: number) => void;
-    history?: History;
 }
 
-class BoardContents extends Component<Props> {
-    state = {
-        showUpdateDeleteBtn: false,
-        replyList: [],
-        replyInput: '',
-        isLogin: false,
-    }
+type BoardContentsProps =
+    BoardContentsStore.BoardContentsState &
+    typeof BoardContentsStore.actionCreators &
+    RouteComponentProps<{}>
+    ;
 
+
+class BoardContents extends Component<any> {
     componentDidMount() {
         var myCookie = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
         
         if (this.props.boardUserId === (myCookie && myCookie[2])) {
-            this.setState({
-                showUpdateDeleteBtn: true
-            });
+            this.props.handleShowUpdateDeleteBtn(true);
+            //this.setState({
+            //    showUpdateDeleteBtn: true
+            //});
         } else {
-            this.setState({
-                showUpdateDeleteBtn: false
-            });
+            this.props.handleShowUpdateDeleteBtn(false);
+            //this.setState({
+            //    showUpdateDeleteBtn: false
+            //});
         }
 
         this.getBoardReplyList();
 
         var myCookie = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
-        if (myCookie && myCookie[2] !== "" && !this.state.isLogin) {
-            this.setState({
-                isLogin: true
-            });
+        if (myCookie && myCookie[2] !== "" && !this.props.isLogin) {
+            this.props.handleIsLogin(true);
+            //this.setState({
+            //    isLogin: true
+            //});
         } else {
-            this.setState({
-                isLogin: false
-            });
+            this.props.handleIsLogin(false);
+            //this.setState({
+            //    isLogin: false
+            //});
         }
     }
 
     handleMoveList = () => {
         this.props.moveList();
-        //this.props.history.push('/board');
     }
 
     handleUpdate = () => {
@@ -83,7 +82,6 @@ class BoardContents extends Component<Props> {
                 .then(res => res.json())
                 .then(data => {
                     if (data.msg === 'OK') {
-                        //this.props.moveList();
                         this.handleMoveList();
                     } else if (data.msg === 'FAIL') {
                         alert(data.exceptionMsg);
@@ -97,9 +95,10 @@ class BoardContents extends Component<Props> {
             .then(res => res.json())
             .then(data => {
                 if (data.msg === 'OK') {
-                    this.setState({
-                        replyList: data.boardReply
-                    });
+                    this.props.handleReplyList(data.boardReply);
+                    //this.setState({
+                    //    replyList: data.boardReply
+                    //});
                 } else if (data.msg === 'FAIL') {
                     alert(data.exceptionMsg);
                 }
@@ -108,20 +107,21 @@ class BoardContents extends Component<Props> {
 
 
     onChange = (e: React.FormEvent<HTMLInputElement>) => {
-        this.setState({
-            [e.currentTarget.name]: e.currentTarget.value
-        });
+        this.props.handleOnChange(e);
+        //this.setState({
+        //    [e.currentTarget.name]: e.currentTarget.value
+        //});
     }
 
     handleSubmit = () => {
-        if (!this.state.isLogin) {
+        if (!this.props.isLogin) {
             alert('댓글 기능은 로그인 사용자만 이용가능합니다.');
         } else {
             fetch('WriteBoardReply', {
                 method: 'post',
                 body: JSON.stringify({
                     boardNo: this.props.boardNo,
-                    ReplyContents: this.state.replyInput
+                    ReplyContents: this.props.replyInput
                 }),
                 headers: {
                     'Accept': 'application/json; charset=utf-8',
@@ -132,9 +132,7 @@ class BoardContents extends Component<Props> {
                 .then(data => {
                     if (data.msg === 'OK') {
                         this.getBoardReplyList();
-                        this.setState({
-                            replyInput: ''
-                        });
+                        this.props.handleReplyInputEmpty();
                     } else if (data.msg === 'FAIL') {
                         alert(data.exceptionMsg);
                     }
@@ -181,9 +179,9 @@ class BoardContents extends Component<Props> {
                             <th>댓글</th>
                             <td colSpan={3}>
                                 <BoardReply
-                                    replyList={this.state.replyList}
+                                    replyList={this.props.replyList}
                                     boardNo={this.props.boardNo}
-                                    isLogin={this.state.isLogin}
+                                    isLogin={this.props.isLogin}
                                     draw={this.getBoardReplyList}
                                 />
                             </td>
@@ -192,7 +190,7 @@ class BoardContents extends Component<Props> {
                             <th>댓글작성</th>
                             <td colSpan={3}>
                                 <span style={{ display: 'block' }}>
-                                    <input name="replyInput" style={{ width: '67%' }} value={this.state.replyInput} onChange={this.onChange} placeholder="댓글작성" maxLength={15} onKeyPress={this.handleKeyPress} /> &nbsp;
+                                    <input name="replyInput" style={{ width: '67%' }} value={this.props.replyInput} onChange={this.onChange} placeholder="댓글작성" maxLength={15} onKeyPress={this.handleKeyPress} /> &nbsp;
                                     <button type="button" className="btn btn-sm btn-secondary" onClick={this.handleSubmit}>등록</button>
                                 </span>
                             </td>
@@ -201,7 +199,7 @@ class BoardContents extends Component<Props> {
                 </Table>
                 <br />
                 <button className="btn btn-sm btn-secondary" onClick={this.handleMoveList}>목록</button>
-                {this.state.showUpdateDeleteBtn
+                {this.props.showUpdateDeleteBtn
                     ? <>&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleUpdate}>수정</button>&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleRemove}>삭제</button></>
                     : null
                 }
@@ -210,4 +208,7 @@ class BoardContents extends Component<Props> {
     };
 }
 
-export default BoardContents;
+export default connect(
+    (state: ApplicationState) => state.boardContents,
+    BoardContentsStore.actionCreators
+)(BoardContents);

@@ -10,6 +10,7 @@ import BoardWrite from './BoardWrite';
 import 'bootstrap';
 import $ from "jquery";
 
+
 type BoardProps =
     BoardStore.BoardState &
     typeof BoardStore.actionCreators &
@@ -47,14 +48,8 @@ class Board extends Component<BoardProps> {
         var myCookie = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
         if (myCookie && myCookie[2] !== "" && !this.props.isLogin) {
             this.props.handleIsLogin(true);
-            //this.setState({
-            //    isLogin: true
-            //});
         } else {
             this.props.handleIsLogin(false);
-            //this.setState({
-            //    isLogin: false
-            //});
         }
 
         this.getBoardList();
@@ -83,9 +78,6 @@ class Board extends Component<BoardProps> {
             .then(data => {
                 if (data.msg === 'OK') {
                     this.props.handleBoardList(data.boardList)
-                    //this.setState({
-                    //    boardList: data.boardList
-                    //});
                 } else if (data.msg === 'FAIL') {
                     alert(data.exceptionMsg);
                 }
@@ -95,13 +87,6 @@ class Board extends Component<BoardProps> {
 
     handleWriteToggle = () => {
         this.props.handleWriteToggle();
-        //this.setState({
-        //    status: 'write',
-        //    boardDetail: {
-        //        boardTitle: '',
-        //        boardContents: '',
-        //    }
-        //})
     }
 
 
@@ -115,9 +100,6 @@ class Board extends Component<BoardProps> {
     handleWriteComplete = async () => {
         $('#modalBoxWrite').modal('hide');
         await this.props.handleReadToggle();
-        //await this.setState({
-        //    status: 'read',
-        //});
         await this.getBoardList();
     }
 
@@ -132,18 +114,6 @@ class Board extends Component<BoardProps> {
             .then(data => {
                 if (data.msg === 'OK') {
                     this.props.handleReadDetailToggle(data.boardDetail)
-                    //this.setState({
-                    //    status: 'readDetail',
-                    //    boardDetail: { 
-                    //        boardNo: data.boardDetail.boardno,
-                    //        boardTitle: data.boardDetail.boardtitle,
-                    //        boardAuthor: data.boardDetail.boardauthor,
-                    //        boardView: data.boardDetail.boardview,
-                    //        boardContents: data.boardDetail.boardcontents,
-                    //        boardCreateDateTime: data.boardDetail.creatE_DATETIME,
-                    //        boardUserId: data.boardDetail.boarduserid
-                    //    }
-                    //});
                 } else if (data.msg === 'FAIL') {
                     alert(data.exceptionMsg);
                 }
@@ -157,9 +127,6 @@ class Board extends Component<BoardProps> {
 
         await this.props.handleReadToggle();
 
-        //await this.setState({
-        //    status: 'read'
-        //});
 
         this.getBoardList();
     }
@@ -167,26 +134,16 @@ class Board extends Component<BoardProps> {
     handleUpdateTransform = async () => {
         await $('#modalBoxRead').modal('hide');
         await this.props.handleUpdateToggle();
-        //await this.setState({
-        //    status: 'update'
-        //});
         $('#modalBoxWrite').modal('show');
     }
 
-    handleDeleteComplete = async (boardNo: number) => {
+    handleDeleteComplete = async () => {
         await this.props.handleReadToggle();
         this.getBoardList();
-        //this.setState({
-        //    status: 'read',
-        //    boardList: this.props.boardList.filter(board => board.boardno !== boardNo)
-        //});
     }
 
     onChange = (e: React.FormEvent<HTMLInputElement>) => {
         this.props.handleOnChange(e);
-        //this.setState({
-        //    [e.currentTarget.name]: e.currentTarget.value
-        //})
     }
 
     handleOpenWriteModal = async () => {
@@ -272,8 +229,6 @@ class Board extends Component<BoardProps> {
                                     boardUserId={this.props.boardDetail.boarduserid!}
                                     moveList={this.handleMoveList}
                                     updateTransform={this.handleUpdateTransform}
-                                    deleteComplete={this.handleDeleteComplete}
-                                    //history={this.props.history}
                                 />
                             </div>
                         </div>
