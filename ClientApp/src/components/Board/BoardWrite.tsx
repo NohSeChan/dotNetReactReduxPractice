@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../store';
-import * as CounterStore from '../../store/Counter';
-import { Link } from 'react-router-dom';
+import * as BoardWriteStore from '../../store/Board/BoardWrite';
 import * as utils from '../../utils/util';
 import $ from "jquery";
 import 'summernote';
@@ -11,54 +9,32 @@ import 'summernote/dist/lang/summernote-ko-KR';
 import 'summernote/dist/summernote.css';
 import 'bootstrap';
 import { Table } from 'reactstrap';
-import { History } from 'history';
-import { BoardDetailState } from '../../store/Board/Board';
 
-//type BoardProps =
-//    CounterStore.CounterState &
-//    typeof CounterStore.actionCreators &
-//    RouteComponentProps<{}>;
-
-
-interface State {
-    boardTitle: string;
-    boardAuthor: string;
-    boardContents: string;
-}
 
 interface Props {
-/*writeComplete: (maxBoardNo: number, boardTitle: string, boardAuthor: string) => void;*/
     writeComplete: () => void;
     moveList: () => void;
-    boardDetail: BoardDetailState;
+    boardDetail: BoardWriteStore.BoardWriteState;
     status: string;
     updateComplete: (boardNo: number) => void;
-    history?: History;
 }
 
-//interface BoardDetailType {
-//    boardno: number,
-//    boardtitle: string,
-//    boardauthor: string,
-//    boardview: number,
-//    boardcontents: string,
-//    creatE_DATETIME: string,
-//    boarduserid: string,
-//}
+type BoardProps =
+    BoardWriteStore.BoardWriteState &
+    typeof BoardWriteStore.actionCreators
+    ;
 
-class BoardWrite extends Component<Props, State> {
-    state = {
-        boardTitle: this.props.boardDetail.boardtitle ||'',
-        boardAuthor: this.props.boardDetail.boardauthor || '',
-        boardContents: this.props.boardDetail.boardcontents || '',
-    }
 
-    componentDidMount() {
-        var myCookie = document.cookie.match('(^|;) ?' + 'userName' + '=([^;]*)(;|$)');
-        var userNameAscii = myCookie && myCookie[2] || '';
-        this.setState({
-            boardAuthor: utils.asciiToStr(userNameAscii.split(','))
-        });
+class BoardWrite extends Component<Props & BoardProps> {
+    componentDidMount = async () => {
+        // update 요청이면
+        if (this.props.boardDetail.boardno !== null) {
+            await this.props.handleUpdateToggle(this.props.boardDetail);
+        } else {
+            var myCookie = document.cookie.match('(^|;) ?' + 'userName' + '=([^;]*)(;|$)');
+            var userNameAscii = myCookie && myCookie[2] || '';
+            this.props.handleWriteSetBoardAuthor(utils.asciiToStr(userNameAscii.split(',')));
+        }
 
         $('#summernote').summernote({
             height: 300,                 // 에디터 높이
@@ -121,16 +97,11 @@ class BoardWrite extends Component<Props, State> {
 
 
     onChange = (e: React.FormEvent<HTMLInputElement>): void => {
-        const key = e.currentTarget.name;
-        if (Object.keys(this.state).includes(key)) {
-            this.setState({
-                [key]: e.currentTarget.value
-            } as Pick<State, keyof State>);
-        }
+        this.props.handleOnChange(e);
     }
 
     handleSubmit = () => {
-        if (this.state.boardTitle === '' || $('#summernote').summernote('code') === '<p><br></p>') {
+        if (this.props.boardtitle === '' || $('#summernote').summernote('code') === '<p><br></p>') {
             alert('게시글 제목과 내용을 입력해주세요');
             return;
         }
@@ -138,8 +109,8 @@ class BoardWrite extends Component<Props, State> {
             fetch(`WriteBoard`, {
                 method: 'post',
                 body: JSON.stringify({
-                    BOARDTITLE: this.state.boardTitle,
-                    BOARDAUTHOR: this.state.boardAuthor,
+                    BOARDTITLE: this.props.boardtitle,
+                    BOARDAUTHOR: this.props.boardauthor,
                     BOARDCONTENTS: $('#summernote').summernote('code')
                 }),
                 headers: {
@@ -160,8 +131,8 @@ class BoardWrite extends Component<Props, State> {
                 method: 'post',
                 body: JSON.stringify({
                     BOARDNO: this.props.boardDetail.boardno,
-                    BOARDTITLE: this.state.boardTitle,
-                    BOARDAUTHOR: this.state.boardAuthor,
+                    BOARDTITLE: this.props.boardtitle,
+                    BOARDAUTHOR: this.props.boardauthor,
                     BOARDCONTENTS: $('#summernote').summernote('code')
                 }),
                 headers: {
@@ -203,8 +174,8 @@ class BoardWrite extends Component<Props, State> {
                                 <input
                                     type="text"
                                     style={{ width: "100%" }}
-                                    name="boardTitle"
-                                    value={this.state.boardTitle}
+                                    name="boardtitle"
+                                    value={this.props.boardtitle}
                                     onChange={this.onChange}
                                     placeholder="제목을 입력해주세요"
                                     maxLength={50}
@@ -216,7 +187,7 @@ class BoardWrite extends Component<Props, State> {
                         <tr>
                             <th>내용</th>
                             <td>
-                                <div id="summernote" dangerouslySetInnerHTML={{ __html: this.state.boardContents }}>
+                                <div id="summernote" dangerouslySetInnerHTML={{ __html: this.props.boardcontents }}>
                                 </div>
                             </td>
                         </tr>
@@ -232,9 +203,7 @@ class BoardWrite extends Component<Props, State> {
     }
 };
 
-//export default connect(
-//    (state: ApplicationState) => state.counter,
-//    CounterStore.actionCreators
-//)(Login);
-
-export default BoardWrite;
+export default connect(
+    (state: ApplicationState) => state.boardWrite,
+    BoardWriteStore.actionCreators
+)(BoardWrite);

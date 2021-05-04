@@ -21,12 +21,11 @@ interface Props {
 
 type BoardContentsProps =
     BoardContentsStore.BoardContentsState &
-    typeof BoardContentsStore.actionCreators &
-    RouteComponentProps<{}>
+    typeof BoardContentsStore.actionCreators
     ;
 
 
-class BoardContents extends Component<any> {
+class BoardContents extends Component<Props & BoardContentsProps> {
     componentDidMount() {
         var myCookie = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
         

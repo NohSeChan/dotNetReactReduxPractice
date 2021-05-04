@@ -74,7 +74,6 @@ export const actionCreators = {
 
 
 export const reducer: Reducer<BoardContentsState> = (state: BoardContentsState | undefined, incomingAction: Action): BoardContentsState => {
-    console.log(111111111);
     if (state === undefined) {
         return {
             showUpdateDeleteBtn: false,
