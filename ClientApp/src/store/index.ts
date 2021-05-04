@@ -5,6 +5,7 @@ import * as UserRegister from './User/UserRegister';
 import * as Board from './Board/Board';
 import * as BoardContents from './Board/BoardContents';
 import * as BoardWrite from './Board/BoardWrite';
+import * as BoardReply from './Board/BoardReply';
 
 // The top-level state object
 export interface ApplicationState {
@@ -15,6 +16,7 @@ export interface ApplicationState {
     board: Board.BoardState | undefined;
     boardContents: BoardContents.BoardContentsState | undefined;
     boardWrite: BoardWrite.BoardWriteState | undefined;
+    boardReply: BoardReply.BoardReplyState | undefined;
 }
 
 // Whenever an action is dispatched, Redux will update each top-level application state property using
@@ -27,7 +29,8 @@ export const reducers = {
     userRegister: UserRegister.reducer,
     board: Board.reducer,
     boardContents: BoardContents.reducer,
-    boardWrite: BoardWrite.reducer
+    boardWrite: BoardWrite.reducer,
+    boardReply: BoardReply.reducer,
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are

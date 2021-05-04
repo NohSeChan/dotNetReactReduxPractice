@@ -18,9 +18,10 @@ export interface UserState {
 }
 
 export interface HandleOnChangeAction {
-    type: 'userRegister/ONCHANGNE',
+    type: 'userRegister/OnChange',
     meta: {
-        e: any
+        targetName: string,
+        targetValue: string
     }
 }
 export interface HandleIdFormCheckAction {
@@ -76,12 +77,13 @@ type KnownAction = HandleOnChangeAction | HandleIdFormCheckAction | HandlePasswo
     | HandleIdDuplCheckAction | HandleUserNameCheckAction;
 
 export const actionCreators = {
-    handleOnChange: (e: any) => ({
-        type: 'userRegister/ONCHANGNE',
+    handleOnChange: (targetName: string, targetValue: string) => ({
+        type: 'userRegister/OnChange',
         meta: {
-            e
+            targetName,
+            targetValue
         }
-    } as HandleOnChangeAction),
+    }),
     handleFormIdCheck: (idFormCheck: boolean, idFormCheckMsg: string) => ({
         type: 'userRegister/IdFormCheck',
         meta: {
@@ -151,10 +153,10 @@ export const reducer: Reducer<UserState> = (state: UserState | undefined, incomi
 
     const action = incomingAction as KnownAction;
     switch (action.type) {
-        case 'userRegister/ONCHANGNE':
+        case 'userRegister/OnChange':
             return {
                 ...state,
-                [action.meta.e.currentTarget.name]: action.meta.e.currentTarget.value
+                [action.meta.targetName]: action.meta.targetValue
             };
         case 'userRegister/IdFormCheck':
             return {

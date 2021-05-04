@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from '../../store';
 import * as BoardWriteStore from '../../store/Board/BoardWrite';
+import { BoardDetailState } from '../../store/Board/Board';
 import * as utils from '../../utils/util';
 import $ from "jquery";
 import 'summernote';
@@ -14,22 +15,22 @@ import { Table } from 'reactstrap';
 interface Props {
     writeComplete: () => void;
     moveList: () => void;
-    boardDetail: BoardWriteStore.BoardWriteState;
+    boardDetail: BoardDetailState | undefined;
     status: string;
     updateComplete: (boardNo: number) => void;
 }
 
-type BoardProps =
+type BoardWriteProps =
     BoardWriteStore.BoardWriteState &
     typeof BoardWriteStore.actionCreators
     ;
 
 
-class BoardWrite extends Component<Props & BoardProps> {
+class BoardWrite extends Component<Props & BoardWriteProps> {
     componentDidMount = async () => {
         // update 요청이면
-        if (this.props.boardDetail.boardno !== null) {
-            await this.props.handleUpdateToggle(this.props.boardDetail);
+        if (this.props.boardDetail!.boardno !== undefined) {
+            await this.props.handleUpdateToggle(this.props.boardDetail!);
         } else {
             var myCookie = document.cookie.match('(^|;) ?' + 'userName' + '=([^;]*)(;|$)');
             var userNameAscii = myCookie && myCookie[2] || '';
@@ -97,7 +98,9 @@ class BoardWrite extends Component<Props & BoardProps> {
 
 
     onChange = (e: React.FormEvent<HTMLInputElement>): void => {
-        this.props.handleOnChange(e);
+        const targetName = e.currentTarget.name;
+        const targetValue = e.currentTarget.value;
+        this.props.handleOnChange(targetName, targetValue);
     }
 
     handleSubmit = () => {
@@ -130,7 +133,7 @@ class BoardWrite extends Component<Props & BoardProps> {
             fetch(`UpdateBoard`, {
                 method: 'post',
                 body: JSON.stringify({
-                    BOARDNO: this.props.boardDetail.boardno,
+                    BOARDNO: this.props.boardDetail!.boardno,
                     BOARDTITLE: this.props.boardtitle,
                     BOARDAUTHOR: this.props.boardauthor,
                     BOARDCONTENTS: $('#summernote').summernote('code')
@@ -143,7 +146,7 @@ class BoardWrite extends Component<Props & BoardProps> {
                 .then(res => res.json())
                 .then(data => {
                     if (data.msg === 'OK') {
-                        this.props.updateComplete(this.props.boardDetail.boardno!);
+                        this.props.updateComplete(this.props.boardDetail!.boardno!);
                     } else if (data.msg === 'FAIL') {
                         alert(data.exceptionMsg);
                     }

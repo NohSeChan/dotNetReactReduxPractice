@@ -1,8 +1,7 @@
 import { Action, Reducer } from 'redux';
-
+import { BoardDetailState } from './Board';
 
 export interface BoardWriteState {
-    boardno?: number;
     boardtitle: string;
     boardauthor: string;
     boardcontents: string;
@@ -10,7 +9,7 @@ export interface BoardWriteState {
 
 export interface HandleUpdateToggleAction {
     type: 'boardWrite/UpdateToggle',
-    payload: BoardWriteState
+    payload: BoardDetailState
 }
 
 
@@ -23,13 +22,14 @@ export interface HandleWriteSetBoardAuthorAction {
 export interface HandleOnChangeAction {
     type: 'boardWrite/OnChange',
     meta: {
-        e: React.FormEvent<HTMLInputElement>
+        targetName: string,
+        targetValue: string
     }
 }
 type KnownAction = HandleUpdateToggleAction | HandleWriteSetBoardAuthorAction | HandleOnChangeAction;
 
 export const actionCreators = {
-    handleUpdateToggle: (boardDetail: BoardWriteState) => ({
+    handleUpdateToggle: (boardDetail: BoardDetailState) => ({
         type: 'boardWrite/UpdateToggle',
         payload: boardDetail
     }),
@@ -39,10 +39,11 @@ export const actionCreators = {
             boardauthor
         }
     }),
-    handleOnChange: (e: React.FormEvent<HTMLInputElement>) => ({
+    handleOnChange: (targetName: string, targetValue: string) => ({
         type: 'boardWrite/OnChange',
         meta: {
-            e
+            targetName,
+            targetValue
         }
     })
 };
@@ -64,7 +65,7 @@ export const reducer: Reducer<BoardWriteState> = (state: BoardWriteState | undef
             return {
                 ...state,
                 boardtitle: action.payload.boardtitle,
-                boardauthor: action.payload.boardauthor,
+                boardauthor: action.payload.boardauthor!,
                 boardcontents: action.payload.boardcontents,
             };
         case 'boardWrite/WriteSetBoardAuthor':
@@ -75,7 +76,7 @@ export const reducer: Reducer<BoardWriteState> = (state: BoardWriteState | undef
         case 'boardWrite/OnChange':
             return {
                 ...state,
-                [action.meta.e.currentTarget.name]: action.meta.e.currentTarget.value
+                [action.meta.targetName]: action.meta.targetValue
             }
         default:
             return state;

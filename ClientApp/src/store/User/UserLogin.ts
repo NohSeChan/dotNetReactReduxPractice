@@ -6,20 +6,22 @@ export interface UserState {
 }
 
 export interface HandleOnChangeAction {
-    type: 'userLogin/ONCHANGNE',
+    type: 'userLogin/OnChange',
     meta: {
-        e: any
+        targetName: string,
+        targetValue: string
     }
 }
 type KnownAction = HandleOnChangeAction;
 
 export const actionCreators = {
-    handleOnChange: (e: any) => ({
-        type: 'userLogin/ONCHANGNE',
+    handleOnChange: (targetName: string, targetValue: string) => ({
+        type: 'userLogin/OnChange',
         meta: {
-            e
+            targetName,
+            targetValue
         }
-    } as HandleOnChangeAction),
+    }),
 };
 
 export const reducer: Reducer<UserState> = (state: UserState | undefined, incomingAction: Action): UserState => {
@@ -32,10 +34,10 @@ export const reducer: Reducer<UserState> = (state: UserState | undefined, incomi
 
     const action = incomingAction as KnownAction;
     switch (action.type) {
-        case 'userLogin/ONCHANGNE':
+        case 'userLogin/OnChange':
             return {
                 ...state,
-                [action.meta.e.currentTarget.name]: action.meta.e.currentTarget.value
+                [action.meta.targetName]: action.meta.targetValue
             };
         default:
             return state;

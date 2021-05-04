@@ -52,9 +52,10 @@ export interface HandleUpdateToggleAction {
     type: 'board/UpdateToggle',
 }
 export interface HandleOnChangeAction {
-    type: 'board/ONCHANGNE',
+    type: 'board/OnChange',
     meta: {
-        e: React.FormEvent<HTMLInputElement>
+        targetName: string,
+        targetValue: string
     }
 }
 type KnownAction = HandleIsLoginAction | HandleBoardListAction | HandleWriteToggleAction | HandleReadToggleAction | HandleReadDetailToggleAction | HandleUpdateToggleAction | HandleOnChangeAction;
@@ -83,10 +84,11 @@ export const actionCreators = {
     handleUpdateToggle: () => ({
         type: 'board/UpdateToggle'
     }),
-    handleOnChange: (e: any) => ({
-        type: 'board/ONCHANGNE',
+    handleOnChange: (targetName: string, targetValue: string) => ({
+        type: 'board/OnChange',
         meta: {
-            e
+            targetName,
+            targetValue
         }
     }),
 };
@@ -167,10 +169,10 @@ export const reducer: Reducer<BoardState> = (state: BoardState | undefined, inco
                 ...state,
                 status: 'update',
             }
-        case 'board/ONCHANGNE':
+        case 'board/OnChange':
             return {
                 ...state,
-                [action.meta.e.currentTarget.name]: action.meta.e.currentTarget.value
+                [action.meta.targetName]: action.meta.targetValue
             }
         default:
             return state;

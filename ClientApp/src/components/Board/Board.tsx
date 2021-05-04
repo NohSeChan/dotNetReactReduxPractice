@@ -19,31 +19,6 @@ type BoardProps =
 
 
 class Board extends Component<BoardProps> {
-    //state = {
-    //    boardList: [
-    //        {
-    //            boardno: 0,
-    //            boardtitle: '',
-    //            boardauthor: '',
-    //            boardview: 0,
-    //            replycount: 0,
-    //        }
-    //    ],
-    //    status: 'read',
-    //    isLogin: false,
-    //    boardDetail: {
-    //        boardNo: 0,
-    //        boardTitle: '',
-    //        boardAuthor: '',
-    //        boardView: 0,
-    //        boardContents: '',
-    //        boardCreateDateTime: '',
-    //        boardUserId: '',
-    //    },
-    //    filterKeyTitle: '',
-    //    filterKeyAuthor: '',
-    //}
-
     componentDidMount() {
         var myCookie = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
         if (myCookie && myCookie[2] !== "" && !this.props.isLogin) {
@@ -143,7 +118,9 @@ class Board extends Component<BoardProps> {
     }
 
     onChange = (e: React.FormEvent<HTMLInputElement>) => {
-        this.props.handleOnChange(e);
+        const targetName = e.currentTarget.name;
+        const targetValue = e.currentTarget.value;
+        this.props.handleOnChange(targetName, targetValue);
     }
 
     handleOpenWriteModal = async () => {

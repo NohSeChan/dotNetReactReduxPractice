@@ -35,7 +35,8 @@ export interface HandleReplyListAction {
 export interface HandleOnChangeAction {
     type: 'boardContents/OnChange',
     meta: {
-        e: React.FormEvent<HTMLInputElement>
+        targetName: string,
+        targetValue: string
     }
 }
 export interface HandleReplyEmptyInputAction {
@@ -60,10 +61,11 @@ export const actionCreators = {
         type: 'boardContents/ReplyList',
         payload: boardReply
     }),
-    handleOnChange: (e: React.FormEvent<HTMLInputElement>) => ({
+    handleOnChange: (targetName: string, targetValue: string) => ({
         type: 'boardContents/OnChange',
         meta: {
-            e
+            targetName,
+            targetValue
         }
     }),
     handleReplyInputEmpty: () => ({
@@ -103,7 +105,7 @@ export const reducer: Reducer<BoardContentsState> = (state: BoardContentsState |
         case 'boardContents/OnChange':
             return {
                 ...state,
-                [action.meta.e.currentTarget.name]: action.meta.e.currentTarget.value
+                [action.meta.targetName]: action.meta.targetValue
             }
         case 'boardContents/ReplyInputEmpty':
             return {

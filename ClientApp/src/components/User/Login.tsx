@@ -12,13 +12,10 @@ type LoginProps =
     RouteComponentProps<{}>;
 
 class Login extends React.PureComponent<LoginProps> {
-    //state = {
-    //    id: '',
-    //    password: '',
-    //}
-
-    handleChange = (e: any) => {
-        this.props.handleOnChange(e);
+    handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+        const targetName = e.currentTarget.name;
+        const targetValue = e.currentTarget.value;
+        this.props.handleOnChange(targetName, targetValue);
     }
 
     handleLogin = (e: any) => {

@@ -14,27 +14,29 @@ class Register extends React.PureComponent<LoginProps> {
     regExp = /[^a-zA-Z0-9]/;
     regExp2 = /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^\w\s]).*/;
 
-    handleChange = (e: any) => {
-        this.props.handleOnChange(e);
+    handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+        const targetName = e.currentTarget.name;
+        const targetValue = e.currentTarget.value;
+        this.props.handleOnChange(targetName, targetValue);
 
-        if (e.target.name === 'id' && e.target.value.match(this.regExp) !== null) {
+        if (e.currentTarget.name === 'id' && e.currentTarget.value.match(this.regExp) !== null) {
             this.props.handleFormIdCheck(false, '※ 아이디에는 영문자와 숫자만 입력가능합니다');
-        } else if (e.target.name === 'id' && e.target.value.match(this.regExp) === null) {
+        } else if (e.currentTarget.name === 'id' && e.currentTarget.value.match(this.regExp) === null) {
             this.props.handleFormIdCheck(true, '');
-        } else if (e.target.name === 'password') {
-            if (e.target.value.match(this.regExp2) === null) {
+        } else if (e.currentTarget.name === 'password') {
+            if (e.currentTarget.value.match(this.regExp2) === null) {
                 this.props.handlePasswordValidationCheck(false, '※ 비밀번호는 영문자/숫자/특수문자가 조합되어야합니다');
             } else {
                 this.props.handlePasswordValidationCheck(true, '');
             }
-            if (e.target.value.length < 8) {
+            if (e.currentTarget.value.length < 8) {
                 this.props.handlePasswordLegnthCheck(false);
             } else {
                 this.props.handlePasswordLegnthCheck(true);
             }
-        } else if (e.target.name === 'password2' && this.props.password === e.target.value) {
+        } else if (e.currentTarget.name === 'password2' && this.props.password === e.currentTarget.value) {
             this.props.handlePasswordEqualCheck(true);
-        } else if (e.target.name === 'password2' && this.props.password !== e.target.value) {
+        } else if (e.currentTarget.name === 'password2' && this.props.password !== e.currentTarget.value) {
             this.props.handlePasswordEqualCheck(false);
         }
     };

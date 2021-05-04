@@ -1,10 +1,7 @@
 import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../store';
-import * as CounterStore from '../../store/Counter';
-import { Link } from 'react-router-dom';
-import { Table } from 'reactstrap';
+import * as BoardReplyStore from '../../store/Board/BoardReply';
 
 interface ReplyType {
     replyId: number;
@@ -22,12 +19,12 @@ interface Props {
     draw: () => void;
 }
 
-class BoardReply extends Component<Props> {
-    state = {
-        replyReply: 0,
-        replyReplyInput: '',
-    }
+type BoardReplyProps =
+    BoardReplyStore.BoardReplyState &
+    typeof BoardReplyStore.actionCreators
+    ;
 
+class BoardReply extends Component<Props & BoardReplyProps> {
     replyInputRef1 = createRef<HTMLInputElement>(); 
     replyInputRef2 = createRef<HTMLInputElement>();
 
@@ -38,23 +35,17 @@ class BoardReply extends Component<Props> {
 
     handleReplyModeTransfer = (e: any, replyId: number) => {
         e.preventDefault();
-        if (replyId !== this.state.replyReply) {
-            this.setState({
-                replyReply: replyId,
-                replyReplyInput: '',
-            });
-        } else if (replyId === this.state.replyReply) {
-            this.setState({
-                replyReply: 0,
-                replyReplyInput: '',
-            });
+        if (replyId !== this.props.replyReply) { // 답글달기 클릭시 세팅
+            this.props.handleReplyModeTransfer(replyId, '');
+        } else if (replyId === this.props.replyReply) { // 답글달기 중복클릭이면 초기화
+            this.props.handleReplyModeTransfer(0, '');
         }
     }
 
     onChange = (e: React.FormEvent<HTMLInputElement>) => {
-        this.setState({
-            [e.currentTarget.name]: e.currentTarget.value
-        })
+        const targetName = e.currentTarget.name;
+        const targetValue = e.currentTarget.value;
+        this.props.handleOnChange(targetName, targetValue);
     }
 
     handleSubmitReplyReply = () => {
@@ -65,8 +56,8 @@ class BoardReply extends Component<Props> {
                 method: 'post',
                 body: JSON.stringify({
                     boardNo: this.props.boardNo,
-                    ReplyContents: this.state.replyReplyInput,
-                    P_REPLYID: this.state.replyReply
+                    ReplyContents: this.props.replyReplyInput,
+                    P_REPLYID: this.props.replyReply
                 }),
                 headers: {
                     'Accept': 'application/json; charset=utf-8',
@@ -76,10 +67,7 @@ class BoardReply extends Component<Props> {
                 .then(res => res.json())
                 .then(data => {
                     if (data.msg === 'OK') {
-                        this.setState({
-                            replyReplyInput: '',
-                            replyReply: 0
-                        });
+                        this.props.handleReplyModeTransfer(0, '');
                         this.props.draw();
                     } else if (data.msg === 'FAIL') {
                         alert(data.exceptionMsg);
@@ -97,7 +85,7 @@ class BoardReply extends Component<Props> {
     
     public render() {
         const lastIndex = this.props.replyList.map((v) => {
-            if (v.p_REPLYID === this.state.replyReply) {
+            if (v.p_REPLYID === this.props.replyReply) {
                 return v.replyId;
             } else {
                 return 0
@@ -112,18 +100,47 @@ class BoardReply extends Component<Props> {
                     <div key={v1.replyId}>
                         <hr style={{ color: '#000000', backgroundColor: '#000000', borderColor: '#000000' }} />
                         <li style={{ listStyle: 'none' }}>
-                            <span style={{ color: "gray" }}>by.{v1.boardreplyusername} : {v1.replyContents} </span> <a href="#" onClick={(e) => this.handleReplyModeTransfer(e, v1.replyId)}> - [답글달기]</a><span style={{ float: 'right', color: "gray" }}>{v1.replyCreateTime.substr(0, 10)}</span>
+                            <span style={{ color: "gray" }}>by.{v1.boardreplyusername} : {v1.replyContents} </span>
+                            <a href="#" onClick={(e) => this.handleReplyModeTransfer(e, v1.replyId)}> - [답글달기]</a>
+                            <span style={{ float: 'right', color: "gray" }}>{v1.replyCreateTime.substr(0, 10)}</span>
                         </li>
-                        {inputReplyIndex === v1.replyId ? <span style={{  display: 'block', margin: '4px'}}><input type="type" style={{ width: "75%" }} name="replyReplyInput" onChange={this.onChange} value={this.state.replyReplyInput} placeholder="답글작성" onKeyPress={this.handleKeyPress} ref={this.replyInputRef1} maxLength={15} />&nbsp;&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleSubmitReplyReply}>등록</button></span> : null}
+                        {inputReplyIndex === v1.replyId
+                            ? <span style={{ display: 'block', margin: '4px' }}>
+                                <input
+                                    style={{ width: "75%" }}
+                                    name="replyReplyInput"
+                                    onChange={this.onChange}
+                                    value={this.props.replyReplyInput}
+                                    placeholder="답글작성"
+                                    onKeyPress={this.handleKeyPress}
+                                    ref={this.replyInputRef1}
+                                    maxLength={15} />&nbsp;&nbsp;
+                                <button className="btn btn-sm btn-secondary" onClick={this.handleSubmitReplyReply}>등록</button>
+                            </span>
+                            : null}
                     </div>
                 )
                 // 답글의 답글이면
                 : (
                     <div key={v1.replyId}>
                         <li style={{ listStyle: 'none' }}>
-                            &nbsp;&nbsp;▶<span style={{ color: "gray" }}>by.{v1.boardreplyusername} :  {v1.replyContents}</span> <span style={{ float: 'right', color: "gray" }}>{v1.replyCreateTime.substr(0, 10)}</span>
+                            &nbsp;&nbsp;▶<span style={{ color: "gray" }}>by.{v1.boardreplyusername} :  {v1.replyContents}</span>
+                            <span style={{ float: 'right', color: "gray" }}>{v1.replyCreateTime.substr(0, 10)}</span>
                         </li>
-                        {inputReplyIndex === v1.replyId ? <span style={{ display: 'block', margin: '4px' }}><input type="type" style={{ width: "75%" }} name="replyReplyInput" onChange={this.onChange} value={this.state.replyReplyInput} placeholder="답글작성" onKeyPress={this.handleKeyPress} ref={this.replyInputRef2} maxLength={15} />&nbsp;&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleSubmitReplyReply}>등록</button></span> : null}    
+                        {inputReplyIndex === v1.replyId
+                            ? <span style={{ display: 'block', margin: '4px' }}>
+                                <input
+                                    style={{ width: "75%" }}
+                                    name="replyReplyInput"
+                                    onChange={this.onChange}
+                                    value={this.props.replyReplyInput}
+                                    placeholder="답글작성"
+                                    onKeyPress={this.handleKeyPress}
+                                    ref={this.replyInputRef2}
+                                    maxLength={15} />&nbsp;&nbsp;
+                                <button className="btn btn-sm btn-secondary" onClick={this.handleSubmitReplyReply}>등록</button>
+                            </span>
+                            : null}    
                     </div>
                 )
         ));
@@ -138,4 +155,9 @@ class BoardReply extends Component<Props> {
     };
 }
 
-export default BoardReply;
+export default connect(
+    (state: ApplicationState) => state.boardReply,
+    BoardReplyStore.actionCreators
+)(BoardReply);
+
+

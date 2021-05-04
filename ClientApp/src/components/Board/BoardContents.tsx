@@ -31,14 +31,8 @@ class BoardContents extends Component<Props & BoardContentsProps> {
         
         if (this.props.boardUserId === (myCookie && myCookie[2])) {
             this.props.handleShowUpdateDeleteBtn(true);
-            //this.setState({
-            //    showUpdateDeleteBtn: true
-            //});
         } else {
             this.props.handleShowUpdateDeleteBtn(false);
-            //this.setState({
-            //    showUpdateDeleteBtn: false
-            //});
         }
 
         this.getBoardReplyList();
@@ -46,14 +40,8 @@ class BoardContents extends Component<Props & BoardContentsProps> {
         var myCookie = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
         if (myCookie && myCookie[2] !== "" && !this.props.isLogin) {
             this.props.handleIsLogin(true);
-            //this.setState({
-            //    isLogin: true
-            //});
         } else {
             this.props.handleIsLogin(false);
-            //this.setState({
-            //    isLogin: false
-            //});
         }
     }
 
@@ -95,9 +83,6 @@ class BoardContents extends Component<Props & BoardContentsProps> {
             .then(data => {
                 if (data.msg === 'OK') {
                     this.props.handleReplyList(data.boardReply);
-                    //this.setState({
-                    //    replyList: data.boardReply
-                    //});
                 } else if (data.msg === 'FAIL') {
                     alert(data.exceptionMsg);
                 }
@@ -106,10 +91,9 @@ class BoardContents extends Component<Props & BoardContentsProps> {
 
 
     onChange = (e: React.FormEvent<HTMLInputElement>) => {
-        this.props.handleOnChange(e);
-        //this.setState({
-        //    [e.currentTarget.name]: e.currentTarget.value
-        //});
+        const targetName = e.currentTarget.name;
+        const targetValue = e.currentTarget.value;
+        this.props.handleOnChange(targetName, targetValue);
     }
 
     handleSubmit = () => {
@@ -148,7 +132,6 @@ class BoardContents extends Component<Props & BoardContentsProps> {
     render() {
         return (
             <div id="tableScrollX"> 
-{/*            <div style={{ width: "450px", float: 'left', overflowX: 'auto'}}> */}
                 <h2 style={{ display: 'inline' }}>{this.props.boardTitle} - [by.{this.props.boardAuthor}]</h2><button className="btn btn-sm" style={{ float: 'right', fontSize: '20px' }} onClick={this.handleMoveList} >[X]</button>
                 <Table style={{ marginTop: '15px' }} >
                     <colgroup>
@@ -189,17 +172,39 @@ class BoardContents extends Component<Props & BoardContentsProps> {
                             <th>댓글작성</th>
                             <td colSpan={3}>
                                 <span style={{ display: 'block' }}>
-                                    <input name="replyInput" style={{ width: '67%' }} value={this.props.replyInput} onChange={this.onChange} placeholder="댓글작성" maxLength={15} onKeyPress={this.handleKeyPress} /> &nbsp;
-                                    <button type="button" className="btn btn-sm btn-secondary" onClick={this.handleSubmit}>등록</button>
+                                    <input
+                                        name="replyInput"
+                                        style={{ width: '67%' }}
+                                        value={this.props.replyInput}
+                                        onChange={this.onChange}
+                                        placeholder="댓글작성"
+                                        maxLength={15}
+                                        onKeyPress={this.handleKeyPress}
+                                    /> &nbsp;
+                                    <button type="button" className="btn btn-sm btn-secondary"
+                                        onClick={this.handleSubmit}>등록</button>
                                 </span>
                             </td>
                         </tr>
                     </tfoot>
                 </Table>
                 <br />
-                <button className="btn btn-sm btn-secondary" onClick={this.handleMoveList}>목록</button>
+                <button
+                    className="btn btn-sm btn-secondary"
+                    onClick={this.handleMoveList}>
+                    목록
+                </button>
                 {this.props.showUpdateDeleteBtn
-                    ? <>&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleUpdate}>수정</button>&nbsp;<button className="btn btn-sm btn-secondary" onClick={this.handleRemove}>삭제</button></>
+                    ? <>&nbsp;
+                        <button
+                            className="btn btn-sm btn-secondary"
+                            onClick={this.handleUpdate}>
+                            수정
+                        </button>&nbsp;
+                        <button className="btn btn-sm btn-secondary" onClick={this.handleRemove}>
+                            삭제
+                        </button>
+                    </>
                     : null
                 }
             </div>
