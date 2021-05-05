@@ -24,7 +24,7 @@
 	</select>
 	<insert id="InsertUser">
 		INSERT INTO T_USER(ID, PASSWORD, USERNAME, CREATE_DATETIME)
-		VALUES (@Id, @PASSWORD, @USERNAME, GETDATE())
+		VALUES (@Id, @PASSWORD2, @USERNAME, GETDATE())
 	</insert>
 
 	<select id="GetUserByUserName">

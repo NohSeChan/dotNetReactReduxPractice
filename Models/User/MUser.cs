@@ -1,4 +1,5 @@
 ﻿using Project1.Services.SQL;
+using Project1.Services.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +21,16 @@ namespace Project1.Models.User
 
         public static async Task<MUser> GetUserByPw(string id, string password)
         {
-            return (await MSSQLDapper.Instance.GetFromXmlQueryAsync<MUser>("User.xml", "GetUserByPw", new { id = id, password = password })).FirstOrDefault();
+            string shaPassword = UtilSHA256.SHA256Hash(password);
+
+            return (await MSSQLDapper.Instance.GetFromXmlQueryAsync<MUser>("User.xml", "GetUserByPw", new { id = id, password = shaPassword })).FirstOrDefault();
         }
 
         public async Task<int> InsertUser(MSSQLDapper mssqlDapper)
         {
+            string shaPassword = UtilSHA256.SHA256Hash(this.PASSWORD2);
+            this.PASSWORD2 = shaPassword;
+
             return await mssqlDapper.ExecuteFromXmlAsync("User.xml", "InsertUser", this);
         }
 

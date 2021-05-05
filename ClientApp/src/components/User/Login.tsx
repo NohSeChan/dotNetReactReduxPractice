@@ -20,8 +20,6 @@ class Login extends React.PureComponent<LoginProps> {
 
     handleLogin = (e: any) => {
         e.preventDefault();
-        console.log(this.props.id);
-        console.log(this.props.password);
         fetch('Login', {
             method: 'post',
             body: JSON.stringify({
