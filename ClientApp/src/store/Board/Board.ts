@@ -58,7 +58,10 @@ export interface HandleOnChangeAction {
         targetValue: string
     }
 }
-type KnownAction = HandleIsLoginAction | HandleBoardListAction | HandleWriteToggleAction | HandleReadToggleAction | HandleReadDetailToggleAction | HandleUpdateToggleAction | HandleOnChangeAction;
+export interface HandleResetBoardListAction {
+    type: 'board/ResetBoardList'
+}
+type KnownAction = HandleIsLoginAction | HandleBoardListAction | HandleWriteToggleAction | HandleReadToggleAction | HandleReadDetailToggleAction | HandleUpdateToggleAction | HandleOnChangeAction | HandleResetBoardListAction;
 
 export const actionCreators = {
     handleIsLogin: (isLogin: boolean) => ({
@@ -91,6 +94,9 @@ export const actionCreators = {
             targetValue
         }
     }),
+    handleResetBoardList: () => ({
+        type: 'board/ResetBoardList'
+    })
 };
 
 
@@ -173,6 +179,31 @@ export const reducer: Reducer<BoardState> = (state: BoardState | undefined, inco
             return {
                 ...state,
                 [action.meta.targetName]: action.meta.targetValue
+            }
+        case 'board/ResetBoardList':
+            return {
+                boardList: [
+                    {
+                        boardno: 0,
+                        boardtitle: '',
+                        boardauthor: '',
+                        boardview: 0,
+                        replycount: 0,
+                    }
+                ],
+                status: 'read',
+                isLogin: false,
+                boardDetail: {
+                    boardno: 0,
+                    boardtitle: '',
+                    boardauthor: '',
+                    boardview: 0,
+                    boardcontents: '',
+                    creatE_DATETIME: '',
+                    boarduserid: '',
+                },
+                filterKeyTitle: '',
+                filterKeyAuthor: '',
             }
         default:
             return state;

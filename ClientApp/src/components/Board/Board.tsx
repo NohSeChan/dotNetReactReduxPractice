@@ -9,6 +9,7 @@ import BoardContents from './BoardContents';
 import BoardWrite from './BoardWrite';
 import 'bootstrap';
 import $ from "jquery";
+import { store } from '../../index';
 
 
 type BoardProps =
@@ -19,15 +20,18 @@ type BoardProps =
 
 
 class Board extends Component<BoardProps> {
-    componentDidMount() {
+    componentDidMount = () => {
         var myCookie = document.cookie.match('(^|;) ?' + 'id' + '=([^;]*)(;|$)');
-        if (myCookie && myCookie[2] !== "" && !this.props.isLogin) {
+        if (myCookie && myCookie[2] !== "") {
             this.props.handleIsLogin(true);
         } else {
-            this.props.handleIsLogin(false);
+            this.props.handleIsLogin(false); 
         }
-
         this.getBoardList();
+
+        if (store.getState().router.action === 'POP') {
+            document.getElementById('boardLink')!.click();
+        }
     }
 
     componentWillUnmount = () => {
@@ -37,12 +41,13 @@ class Board extends Component<BoardProps> {
 
         if ($('#modalBoxRead').length === 1) {
             $('#modalBoxRead').modal('hide');
-        } 
+        }
+        this.props.handleResetBoardList();
     }
 
     //shouldComponentUpdate(nextProps: any, nextState: any) {
-    //    console.log('this.props', this.props);
-    //    console.log('nextState', nextState);
+    //    console.log('this.props', this.props.boardList);
+    //    console.log('nextProps', nextProps);
     //    return true;
     //}
 
@@ -52,7 +57,7 @@ class Board extends Component<BoardProps> {
             .then(res => res.json())
             .then(data => {
                 if (data.msg === 'OK') {
-                    this.props.handleBoardList(data.boardList)
+                    this.props.handleBoardList(data.boardList);
                 } else if (data.msg === 'FAIL') {
                     alert(data.exceptionMsg);
                 }
@@ -66,9 +71,7 @@ class Board extends Component<BoardProps> {
 
 
     moveLoginPage = () => {
-        document.getElementById('boardLink')!.className = "nav-link";
-        document.getElementById('loginLink')!.className = "nav-link active";
-
+        document.getElementById('loginLink')!.click();
         alert('로그인을 해주세요');
     }
 

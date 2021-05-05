@@ -91,10 +91,12 @@ class BoardWrite extends Component<Props & BoardWriteProps> {
                     $('#imageBoard > ul').append('<li><img src="' + data.url + '" width="480" height="auto"/></li>');
                 }
             });
+        }
     }
 
-    
-}
+    componentWillUnmount = () => {
+        this.props.handleResetBoardWrite();
+    }
 
 
     onChange = (e: React.FormEvent<HTMLInputElement>): void => {

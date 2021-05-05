@@ -5,6 +5,7 @@ import { ApplicationState } from '../../store';
 import * as UserLoginStore from '../../store/User/UserLogin';
 import { Link } from 'react-router-dom';
 import * as utils from '../../utils/util';
+import { store } from '../../index';
 
 type LoginProps =
     UserLoginStore.UserState &
@@ -12,6 +13,13 @@ type LoginProps =
     RouteComponentProps<{}>;
 
 class Login extends React.PureComponent<LoginProps> {
+
+    componentDidMount = () => {
+        if (store.getState().router.action === 'POP') {
+            document.getElementById('loginLink')!.click();
+        }
+    }
+
     handleChange = (e: React.FormEvent<HTMLInputElement>) => {
         const targetName = e.currentTarget.name;
         const targetValue = e.currentTarget.value;
@@ -44,8 +52,9 @@ class Login extends React.PureComponent<LoginProps> {
     }
 
     handleMoveRegist = () => {
-        document.getElementById('registLink')!.className = "nav-link active";
-        document.getElementById('loginLink')!.className = "nav-link";
+        //document.getElementById('registLink')!.className = "nav-link active";
+        //document.getElementById('loginLink')!.className = "nav-link";
+        document.getElementById('registLink')!.click();
     }
     
     public render() {

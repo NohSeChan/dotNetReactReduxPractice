@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../store';
 import * as UserRegisterStore from '../../store/User/UserRegister';
 import * as utils from '../../utils/util';
+import { store } from '../../index';
 
 type LoginProps =
     UserRegisterStore.UserState &
@@ -11,6 +12,12 @@ type LoginProps =
     RouteComponentProps<{}>;
 
 class Register extends React.PureComponent<LoginProps> {
+    componentDidMount = () => {
+        if (store.getState().router.action === 'POP') {
+            document.getElementById('registLink')!.click();
+        }
+    }
+
     regExp = /[^a-zA-Z0-9]/;
     regExp2 = /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^\w\s]).*/;
 

@@ -26,7 +26,10 @@ export interface HandleOnChangeAction {
         targetValue: string
     }
 }
-type KnownAction = HandleUpdateToggleAction | HandleWriteSetBoardAuthorAction | HandleOnChangeAction;
+export interface HandleResetBoardWriteAction {
+    type: 'boardWrite/ResetBoardWrite',
+}
+type KnownAction = HandleUpdateToggleAction | HandleWriteSetBoardAuthorAction | HandleOnChangeAction | HandleResetBoardWriteAction;
 
 export const actionCreators = {
     handleUpdateToggle: (boardDetail: BoardDetailState) => ({
@@ -45,6 +48,9 @@ export const actionCreators = {
             targetName,
             targetValue
         }
+    }),
+    handleResetBoardWrite: () => ({
+        type: 'boardWrite/ResetBoardWrite'
     })
 };
 
@@ -77,6 +83,12 @@ export const reducer: Reducer<BoardWriteState> = (state: BoardWriteState | undef
             return {
                 ...state,
                 [action.meta.targetName]: action.meta.targetValue
+            }
+        case 'boardWrite/ResetBoardWrite':
+            return {
+                boardtitle: '',
+                boardauthor: '',
+                boardcontents: '',
             }
         default:
             return state;
