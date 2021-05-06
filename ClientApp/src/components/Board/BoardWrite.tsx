@@ -38,10 +38,9 @@ class BoardWrite extends Component<Props & BoardWriteProps> {
         }
 
         $('#summernote').summernote({
-            height: 300,                 // 에디터 높이
+            height: 300,                // 에디터 높이
             width: '100%',
-            lang:'ko-KR',
-            focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+            lang:'ko-KR',               // 한글 ToolTip
             toolbar: [
                 ['fontsize', ['fontsize']],
                 ['style', ['style']],
