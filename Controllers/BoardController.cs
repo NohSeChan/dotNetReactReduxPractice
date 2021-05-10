@@ -266,23 +266,15 @@ namespace Project1.Controllers
         {
             try
             {
-                //if (json_data.IsNull() == false)
-                //{
-                //    input = JsonConvert.DeserializeObject<MTestJson>(json_data);
-                //}
-
-                /*
-                 * 파일 저장위치는 저장 테스트용이며
-                 * 실제 저장시는 파일명 중복 검증 및 업로드 파일형식 (exe, js 등) 제한하여야합니다
-                 * 파일명 중복문제 -> DB를 통한 filename 및 fullpath 분리관리로 해결 등
-                 */
-
                 foreach (var file in Request.Form.Files)
                 {
                     if (file.Length > 0)
                     {
                         var fileName = Path.GetFileName(file.FileName);
-                        var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "UploadFiles", fileName); //파일 저장위치는 소스와 분리해야하나 일단 테스트용으로 놔둠;;
+                        var fileExtention = Path.GetExtension(file.FileName);
+                        Guid g = Guid.NewGuid();
+                        
+                        var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "UploadFiles", g.ToString()+fileExtention);
 
                         Directory.CreateDirectory(Path.GetDirectoryName(filePath)); //exist 하고 없으면 create 함
 
@@ -290,15 +282,17 @@ namespace Project1.Controllers
                         {
                             await file.CopyToAsync(stream);
                         }
-
-                        return Json(new { url = "http://"+ Request.Host.Value+ "/UploadFiles/" + fileName });
+                        
+                        return Json(new { url = "http://"+ Request.Host.Value+ "/UploadFiles/" + g.ToString() + fileExtention });
                     }
                 }
-                return Json(new { });
+                
+                return Json(new { msg = "파일업로드에 실패하였습니다" });
                 
             }
             catch (Exception ex)
             {
+                _mssqlDapper.Rollback();
                 return Json(new { msg = ex.Message });
             }
 

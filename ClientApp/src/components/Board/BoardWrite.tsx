@@ -86,6 +86,7 @@ class BoardWrite extends Component<Props & BoardWriteProps> {
                 processData: false,
                 success: function (data) {
                     //항상 업로드된 파일의 url이 있어야 한다.
+                    console.log(210511, data.url);
                     $(editor).summernote('insertImage', data.url);
                     $('#imageBoard > ul').append('<li><img src="' + data.url + '" width="480" height="auto"/></li>');
                 }
