@@ -19,11 +19,19 @@ th, td {
     padding: 10px;
 }
 
-@media (max-width: 991px) {
-    #tableScrollX {
-        width: 450px; 
-        float: left; 
-        overflow-x: auto;
-    }
+.tableScrollX {
+    overflow-x: auto;
 }
 
+@media (min-width:768px) and (max-width:991px) {
+    .tdReplyLiTag {
+        list-style: none;
+        width: 515px;
+    }
+}
+@media (max-width:767px) {
+    .tdReplyLiTag {
+        list-style: none;
+        width: 455px;
+    }
+}

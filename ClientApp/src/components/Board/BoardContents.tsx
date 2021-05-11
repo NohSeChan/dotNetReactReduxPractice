@@ -131,15 +131,9 @@ class BoardContents extends Component<Props & BoardContentsProps> {
 
     render() {
         return (
-            <div id="tableScrollX"> 
+            <div>  
                 <h2 style={{ display: 'inline' }}>{this.props.boardTitle} - [by.{this.props.boardAuthor}]</h2><button className="btn btn-sm" style={{ float: 'right', fontSize: '20px' }} onClick={this.handleMoveList} >[X]</button>
-                <Table style={{ marginTop: '15px' }} >
-                    <colgroup>
-                        <col style={{ "width": "199px" }} />
-                        <col style={{ "width": "auto" }} />
-                        <col style={{ "width": "199px" }} />
-                        <col style={{ "width": "200px" }} />
-                    </colgroup>
+                <Table style={{ marginTop: '15px', tableLayout: 'fixed' }} >
                     <thead> 
                         <tr>
                             <th>작성일</th>
@@ -151,8 +145,8 @@ class BoardContents extends Component<Props & BoardContentsProps> {
                     <tbody>
                         <tr>
                             <th style={{ verticalAlign: 'middle' }}>내용</th>
-                            <td colSpan={3} style={{ height: "450px" }}>
-                                <div dangerouslySetInnerHTML={{ __html: this.props.boardContents }} />
+                            <td colSpan={3}>
+                                <div style={{ height: "450px" }} className="tableScrollX" dangerouslySetInnerHTML={{ __html: this.props.boardContents }} />
                             </td>
                         </tr>
                     </tbody>
@@ -160,18 +154,20 @@ class BoardContents extends Component<Props & BoardContentsProps> {
                         <tr>
                             <th>댓글</th>
                             <td colSpan={3}>
-                                <BoardReply
-                                    replyList={this.props.replyList}
-                                    boardNo={this.props.boardNo}
-                                    isLogin={this.props.isLogin}
-                                    draw={this.getBoardReplyList}
-                                />
+                                <div className="tableScrollX">
+                                    <BoardReply
+                                        replyList={this.props.replyList}
+                                        boardNo={this.props.boardNo}
+                                        isLogin={this.props.isLogin}
+                                        draw={this.getBoardReplyList}
+                                    />
+                                </div>
                             </td>
                         </tr>
                         <tr>
                             <th>댓글작성</th>
                             <td colSpan={3}>
-                                <span style={{ display: 'block' }}>
+                                <p>
                                     <input
                                         name="replyInput"
                                         style={{ width: '67%' }}
@@ -183,7 +179,7 @@ class BoardContents extends Component<Props & BoardContentsProps> {
                                     /> &nbsp;
                                     <button type="button" className="btn btn-sm btn-secondary"
                                         onClick={this.handleSubmit}>등록</button>
-                                </span>
+                                </p>
                             </td>
                         </tr>
                     </tfoot>

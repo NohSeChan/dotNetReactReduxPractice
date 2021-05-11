@@ -99,7 +99,7 @@ class BoardReply extends Component<Props & BoardReplyProps> {
                 ? (
                     <div key={v1.replyId}>
                         <hr style={{ color: '#000000', backgroundColor: '#000000', borderColor: '#000000' }} />
-                        <li style={{ listStyle: 'none' }}>
+                        <li className="tdReplyLiTag">
                             <span style={{ color: "gray" }}>by.{v1.boardreplyusername} : {v1.replyContents} </span>
                             <a href="#" onClick={(e) => this.handleReplyModeTransfer(e, v1.replyId)}> - [답글달기]</a>
                             <span style={{ float: 'right', color: "gray" }}>{v1.replyCreateTime.substr(0, 10)}</span>
@@ -123,7 +123,7 @@ class BoardReply extends Component<Props & BoardReplyProps> {
                 // 답글의 답글이면
                 : (
                     <div key={v1.replyId}>
-                        <li style={{ listStyle: 'none' }}>
+                        <li className="tdReplyLiTag">
                             &nbsp;&nbsp;▶<span style={{ color: "gray" }}>by.{v1.boardreplyusername} :  {v1.replyContents}</span>
                             <span style={{ float: 'right', color: "gray" }}>{v1.replyCreateTime.substr(0, 10)}</span>
                         </li>
